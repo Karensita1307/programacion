@@ -3,6 +3,7 @@
 import tkinter as tk #Se importa la libreria y se le da un título
 from tkinter import *  # Librería que importa todos los módulos de la clase
 from PIL import Image, ImageTk as itk#librería de imagenes
+from tkinter import ttk
 
 # ---------Ventana principal------------
 window = Tk()
@@ -22,7 +23,7 @@ logo.grid(columnspan=3, row=0, pady=20)
 
 #----------Etiquetas y entradas----------
 #-----------------Código-----------------
-codigo_tex = tk.Label(lienzo, text="Código", bg="White")
+codigo_tex = tk.Label(lienzo, text="Código", bg="White") #.label para copiar texto 
 codigo_tex.grid(row=1, column=0, padx=0, pady=10)
 
 codigo_entry = tk.Entry(lienzo)
@@ -58,18 +59,33 @@ def nueva_ventana_vuelos():
     ventana_vuelos.resizable(0, 0)
 
     #----Barra de personas e ida----
-    barra = tk.Frame(ventana_vuelos, bg='white', bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=2)
-    barra.pack(pady=20, padx=20, fill='x')
+    barra = tk.Frame(ventana_vuelos, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=2)
+    barra.pack(pady=20, padx=20, fill="x")
 
     #---------Botón de ida----------
-    barra_1 = tk.Frame(barra, bg='white', bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=2)
+    barra_1 = tk.Frame(barra, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=2)
     barra_1.pack(pady=10, padx=5, side="left")
     solo_ida = tk.Button(barra_1, text="     Solo ida", relief="flat", bg="white", fg= "black")
     solo_ida.pack(side="right", padx=10, pady=5)
 
     #-----Cantidad de personas------
-    barra_2 = tk.Frame(barra, bg='white', bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=2)
+    barra_2 = tk.Frame(barra, bg="white", bd=0, relief=tk.FLAT, highlightbackground="red", highlightthicknes=2)
     barra_2.pack(pady=10, padx=5, side="right")   
+    personas = tk.Label(barra_2, text="Personas:", bg="white")
+    personas.pack (side="right", padx=20, pady=5)
+    personas_cant = ttk.Combobox(barra_2,values=[str(i) for i in range(1,11)], width=3)
+    personas_cant.current(0) #para al iniciar siempre empezar en la pocision 0 , osea 1
+    personas_cant.pack(side="right", padx=5, pady=5)
+
+    #------marco de busqueda--------
+    barra_3 = tk.Frame(ventana_vuelos, bg="white", bd=2, relief=tk.FLAT, highlightbackground='red', highlightthicknes=2)
+    barra_3.pack(pady=10, padx=5, side="bottom")
+
+    origen= tk.Label(barra_3, text="origen", bg="white")
+    origen.grid(row=0, column=1, padx=10, pady=5)
+    
+
+
 
 
 window.mainloop()
