@@ -56,6 +56,7 @@ def nueva_ventana_vuelos():
     ventana_vuelos = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_vuelos.title("Sky-Voyage")
     ventana_vuelos.geometry("800x400")
+    ventana_vuelos.config(bg = "white")
     ventana_vuelos.resizable(0, 0)
 
     lienzo_2 = tk.Frame(ventana_vuelos, bg = "white") #.frame es un contenedor visual de widgets
@@ -102,15 +103,33 @@ def nueva_ventana_vuelos():
     
     #-------------Botón Buscar-------------
     btn_buscar = tk.Button(barra_3, text="Buscar", bg="red", fg="white", command=nueva_ventana_asientos)
-    btn_buscar.pack(side="bottom", padx= 15, pady=20)
+    btn_buscar.pack(side="bottom", padx= 10, pady=40)
 
 def nueva_ventana_asientos():
-    #---Crear una nueva ventana---
+    #-------Crear una nueva ventana--------
     ventana_asientos = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_asientos.title("Sky-Voyage")
     ventana_asientos.geometry("800x400")
+    ventana_asientos.config(bg = "white")
     ventana_asientos.resizable(0, 0)
 
+    #----------------Lienzo----------------
+    lienzo_3 = tk.Frame(ventana_asientos, bg="white")
+    lienzo_3.pack(pady=40, fill="x")
+
+    #--------selección de asientos---------
+    seleccion = tk.Label(lienzo_3, text="Selección de Asientos", font=("Times new roman", 12), bg="white")
+    seleccion.pack(pady=20, side="left")
+
+    #-----Marco para asientos y etiquetas---
+    marco = tk.Frame(ventana_asientos)
+    marco.pack(pady=10)
+
+    marco_asientos = tk.Frame(marco, bg="mistyrose")
+    marco_asientos.pack(side="left")
+
+    marco_clases = tk.Frame(marco)
+    marco_clases.pack(padx=20, side="right")  # Añadí un relleno a la derecha para separar las etiquetas de clase
 
 
 window.mainloop()
