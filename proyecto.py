@@ -11,6 +11,7 @@ window.title("Sky-Voyage")
 window.geometry("400x300")
 window.config(bg = "white")
 window.resizable(0, 0)
+window.iconbitmap("avion.ico")
 
 #-----------Se crea un lienzo-----------
 lienzo = tk.Frame(window, bg = "white") #.frame es un contenedor visual de widgets
@@ -58,6 +59,7 @@ def nueva_ventana_vuelos():
     ventana_vuelos.geometry("800x400")
     ventana_vuelos.config(bg = "white")
     ventana_vuelos.resizable(0, 0)
+    ventana_vuelos.iconbitmap("avion.ico")
 
     lienzo_2 = tk.Frame(ventana_vuelos, bg = "white") #.frame es un contenedor visual de widgets
     lienzo_2.pack(pady=40, fill="x")
@@ -103,33 +105,76 @@ def nueva_ventana_vuelos():
     
     #-------------Botón Buscar-------------
     btn_buscar = tk.Button(barra_3, text="Buscar", bg="red", fg="white", command=nueva_ventana_asientos)
-    btn_buscar.pack(side="bottom", padx= 10, pady=40)
+    btn_buscar.pack(pady=20)
+
 
 def nueva_ventana_asientos():
     #-------Crear una nueva ventana--------
     ventana_asientos = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_asientos.title("Sky-Voyage")
-    ventana_asientos.geometry("800x400")
+    ventana_asientos.geometry("800x500")
     ventana_asientos.config(bg = "white")
     ventana_asientos.resizable(0, 0)
+    ventana_asientos.iconbitmap("avion.ico")
 
     #----------------Lienzo----------------
     lienzo_3 = tk.Frame(ventana_asientos, bg="white")
-    lienzo_3.pack(pady=40, fill="x")
+    lienzo_3.pack(pady=10, fill="x")
 
     #--------selección de asientos---------
     seleccion = tk.Label(lienzo_3, text="Selección de Asientos", font=("Times new roman", 12), bg="white")
-    seleccion.pack(pady=20, side="left")
+    seleccion.pack(pady=0, padx=80, side="left")
 
     #-----Marco para asientos y etiquetas---
-    marco = tk.Frame(ventana_asientos)
-    marco.pack(pady=10)
+    marco = tk.Frame(ventana_asientos, bg="white")
+    marco.pack(pady=5)
 
     marco_asientos = tk.Frame(marco, bg="mistyrose")
-    marco_asientos.pack(side="left")
+    marco_asientos.pack(side="left", pady=5)
 
-    marco_clases = tk.Frame(marco)
-    marco_clases.pack(padx=20, side="right")  # Añadí un relleno a la derecha para separar las etiquetas de clase
+    marco_clases = tk.Frame(marco, bg="white")
+    marco_clases.pack(padx=20, side="right", pady=5)  # Relleno a la derecha para separar las etiquetas de clase
+
+    #----Crear etiquetas para las columnas----
+    columnas = ["A", "B", "C", "D", "E", "F"]
+    for i, columna in enumerate(columnas):
+        lbl = tk.Label(marco_asientos, text=columna, bg="mistyrose")
+        lbl.grid(row=0, column=i+1)
+
+    #--Crear los botones para los asientos (72 asientos, 12 filas x 6 columnas)---
+    num_filas = 12
+    num_columnas = 6
+
+    for r in range(num_filas):
+        lbl = tk.Label(marco_asientos, text=str(r+1), bg="mistyrose")
+        lbl.grid(row=r+1, column=0)
+        for c in range(num_columnas):
+            clase = "Aluminio" if r >= 8 else "Diamante" if r >= 4 else "Premium"
+            color = "lightcoral" if clase == "Premium" else "brown" if clase == "Diamante" else "red"
+            btn = tk.Button(marco_asientos, bg=color, width=2, height=1, relief="flat")
+            btn.grid(row=r+1, column=c+1, padx=2, pady=2)
+
+    #-----Crear las etiquetas para las clases------
+    lbl_premium = tk.Label(marco_clases, text="Premium", bg="lightcoral", width=10)
+    lbl_premium.pack(pady=40)
+
+    lbl_diamante = tk.Label(marco_clases, text="Diamante", bg="brown", width=10)
+    lbl_diamante.pack(pady=40)
+
+    lbl_aluminio = tk.Label(marco_clases, text="Aluminio", bg="red", width=10)
+    lbl_aluminio.pack(pady=40)
+
+    #-------Botón de selección-------
+    btn_seleccionar = tk.Button(ventana_asientos, text="Seleccionar", bg="red", fg="white", command=ventana_ofertas)
+    btn_seleccionar.pack(pady=10, padx=30, side="right")
+
+def ventana_ofertas():
+    ventana_ofertas = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
+    ventana_ofertas.title("Sky-Voyage")
+    ventana_ofertas.geometry("800x500")
+    ventana_ofertas.config(bg = "white")
+    ventana_ofertas.resizable(0, 0)
+    ventana_ofertas.iconbitmap("avion.ico")
 
 
 window.mainloop()
