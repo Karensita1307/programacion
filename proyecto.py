@@ -155,18 +155,6 @@ matriz = [
 ['V560', '2024-06-26', '08:41:00', '11:20:00', 118816, 675485, 2104917, 'Santa Marta', 'Cali'],
 ]
 
-ciudades = set() # set() es para datos repetidos en un conjunto
-ciudades_origen = [] # Lista donde se van a almacenar
-
-# Recorre cada lista en la matriz
-for i in matriz:
-# Obtiene el dato número 8 (ciudad de origen) y lo agrega al conjunto
-    ciudad_ori = i[7]
-    ciudades.add(ciudad_ori) # add para añadir al conjunto
-
-# Imprime las ciudades únicas
-for ciudad in ciudades:
-    ciudades_origen.append(ciudad) # Añadir las ciudades a la lista
 
 
 def nueva_ventana_vuelos():
@@ -187,7 +175,7 @@ def nueva_ventana_vuelos():
 
     #---------Botón de ida----------
     solo_ida = tk.Label(barra, text="     Solo ida", relief="flat", bg="white", fg= "black", highlightbackground='red', highlightthicknes=1)
-    solo_ida.pack(side="left", padx=10, pady=5)
+    solo_ida.pack(side="left", padx=5, pady=5)
 
     #-----Cantidad de personas------
     barra_2 = tk.Frame(barra, bg="white", bd=0, relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
@@ -198,34 +186,86 @@ def nueva_ventana_vuelos():
     personas_cant.current(0) #para al iniciar siempre empezar en la pocision 0 , osea 1
     personas_cant.pack(side="right", padx=5, pady=5)
 
+    global cantidad_personas
+    cantidad_personas = personas_cant
+
     #------marco de busqueda--------
     barra_3 = tk.Frame(lienzo_2, bg="white", bd=2, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    barra_3.pack(pady=0, padx=20, fill="x")
+    barra_3.pack(side="top", pady=0, padx=20, fill="x")
+    busqueda = tk.Frame(barra_3, bg="white", bd=2, relief=tk.FLAT)
+    busqueda.pack(side="bottom", pady=0, padx=20, fill="x")
 
     #-------------Origen------------
     barra_4 = tk.Frame(barra_3, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    barra_4.pack(pady=20, padx=10, side="left")
-    origen = tk.Label(barra_4, text="origen", bg="white")
-    origen.grid(row=0, column=0, padx=10, pady=5)
-    origen_txt = ttk.Combobox(barra_4, values=ciudades_origen, width=10)
-    origen_txt.grid(row=1, column=0, padx=10, pady=5)
+    barra_4.pack(pady=20, padx=20, side="left")
+    origen = tk.Label(barra_4, text="Origen", bg="white")
+    origen.grid(row=0, column=0, padx=5, pady=2)
+    
+    #-------Ciudades de origen------
+    ciudades = set() # set() es para datos repetidos en un conjunto
+    ciudades_origen = [] # Lista donde se van a almacenar
+
+    # Recorre cada lista en la matriz
+    for o in matriz:
+    # Obtiene el dato número 7 (ciudad de origen) y lo agrega al conjunto
+        ciudad_ori = o[7]
+        ciudades.add(ciudad_ori) # add para añadir al conjunto
+
+    # Imprime las ciudades únicas
+    for ciudad in ciudades:
+        ciudades_origen.append(ciudad) # Añadir las ciudades a la lista
+    
+    origen_txt = ttk.Combobox(barra_4, values=ciudades_origen, width=20)
+    origen_txt.grid(row=1, column=1, padx=5, pady=2)
 
     #------------Destino------------
     barra_5 = tk.Frame(barra_3, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
     barra_5.pack(pady=20, padx=0, side="left")
     destino = tk.Label(barra_5, text="Destino", bg="white")
-    destino.grid(row=0, column=0, padx=10, pady=5)
+    destino.grid(row=0, column=0, padx=5, pady=2)
 
-    #-------------Más---------------
+    #-------Ciudades de destino------
+    ciudades_destino = [] # Lista donde se van a almacenar
+
+    # Recorre cada lista en la matriz
+    for d in matriz:
+    # Obtiene el dato número 8 (ciudad de destino) y lo agrega al conjunto
+        ciudad_des = d[8]
+        ciudades.add(ciudad_des) # add para añadir al conjunto
+
+    # Imprime las ciudades únicas
+    for des in ciudades:
+        ciudades_destino.append(des) # Añadir las ciudades a la lista
+
+    destino_txt = ttk.Combobox(barra_5, values=ciudades_destino, width=20)
+    destino_txt.grid(row=1, column=1, padx=5, pady=2)
+
+    #-------------Fecha---------------
     barra_6 = tk.Frame(barra_3, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    barra_6.pack(pady=20, padx=20, side="left")
-    destino = tk.Label(barra_6, text="Más", bg="white")
-    destino.grid(row=0, column=0, padx=10, pady=5)
+    barra_6.pack(pady=20, padx=20, side="right")
+    fecha = tk.Label(barra_6, text="Fecha", bg="white")
+    fecha.grid(row=0, column=0, padx=5, pady=2)
     
-    #-------------Botón Buscar-------------
-    btn_buscar = tk.Button(barra_3, text="Buscar", bg="red", fg="white", command=nueva_ventana_asientos)
-    btn_buscar.pack(pady=20)
+    #------------fechas----------------
+    fechass = set()
+    fechas = [] # Lista donde se van a almacenar
 
+    # Recorre cada lista en la matriz
+    for f in matriz:
+    # Obtiene el dato número 1 (fecha) y lo agrega al conjunto
+        fecha_ida = f[1]
+        fechass.add(fecha_ida) # add para añadir al conjunto
+
+    # Imprime las ciudades únicas
+    for fech in fechass:
+        fechas.append(fech) # Añadir las ciudades a la lista
+    
+    fecha_txt = ttk.Combobox(barra_6, values=fechas, width=25)
+    fecha_txt.grid(row=1, column=1, padx=5, pady=2)
+
+    #---------Botón Buscar-----------
+    btn_buscar = tk.Button(busqueda, text="Buscar", bg="red", fg="white", command=nueva_ventana_asientos)
+    btn_buscar.pack(pady=20)
 
 def nueva_ventana_asientos():
     #-------Crear una nueva ventana--------
@@ -270,9 +310,9 @@ def nueva_ventana_asientos():
         for c in range(num_columnas):
             clase = "Aluminio" if r >= 8 else "Diamante" if r >= 4 else "Premium"
             color = "lightcoral" if clase == "Premium" else "brown" if clase == "Diamante" else "red"
-            btn = tk.Button(marco_asientos, bg=color, width=2, height=1, relief="flat")
+            btn = tk.Checkbutton(marco_asientos, bg=color, width=2, height=1, relief="flat")
             btn.grid(row=r+1, column=c+1, padx=2, pady=2)
-
+            
     #-----Crear las etiquetas para las clases------
     lbl_premium = tk.Label(marco_clases, text="Premium", bg="lightcoral", width=10)
     lbl_premium.pack(pady=40)
