@@ -323,9 +323,9 @@ def nueva_ventana_asientos():
             color = "lightcoral" if clase == "Premium" else "brown" if clase == "Diamante" else "red"
             btn = tk.Button(marco_asientos, bg=color, width=2, height=1)
             btn.grid(row=r+1, column=c+1, padx=2, pady=2)
-            for p in range(cant):  
-                if p != cant:
-                    btn.config(bg="green")
+            # for p in range(cant):  
+            #     if p != cant:
+            #         btn.config(bg="green")
             
 
     #-----Crear las etiquetas para las clases------
@@ -339,13 +339,13 @@ def nueva_ventana_asientos():
     lbl_aluminio.pack(pady=40)
         
     #-------Botón de selección-------
-    btn_seleccionar = tk.Button(ventana_asientos, text="Seleccionar", bg="red", fg="white", command=ventana_ofertas)
+    btn_seleccionar = tk.Button(ventana_asientos, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_ofertas)
     btn_seleccionar.pack(pady=10, padx=30, side="right")
 
-    guardar = tk.Checkbutton(ventana_asientos, text="Guardar datos")
-    guardar.pack(pady=10, padx=30, side="bottom")
+    guardar_asientos = tk.Checkbutton(ventana_asientos, text="Guardar datos")
+    guardar_asientos.pack(pady=10, padx=30, side="bottom")
 
-def ventana_ofertas():
+def nueva_ventana_ofertas():
     ventana_ofertas = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_ofertas.title("Sky-Voyage")
     ventana_ofertas.geometry("800x500")
@@ -357,50 +357,50 @@ def ventana_ofertas():
     lienzo_4 = tk.Frame(ventana_ofertas, bg = "white")
     lienzo_4.pack(pady=40, fill="x")
 
-    #------Etiquetas y entradas---------
     # ------ Barra de ida -------
-    barra_ofertas = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    barra_ofertas.pack(pady=0, padx=20, fill="x")
+    barra_7 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_7.pack(pady=0, padx=20, fill="x")
 
     #------ boton de Ida---------
-    ida_ofertas = tk.Label(barra_ofertas, text= "   Ida:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    ida_ofertas = tk.Label(barra_7, text= "   Ida:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
     ida_ofertas.pack(side="left", padx=5, pady=5)
 
     text = (f"{ori} a {des}")
-    viaje = tk.Label(barra_ofertas, text=text , relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
-    viaje.pack(side="left", padx=5, pady=8)
+    viaje = tk.Label(barra_7, text=text , relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    viaje.pack(side="left", padx=0, pady=8)
 
    # ------ Barra de fechas -------
-    barra_viaje = tk.Frame(lienzo_4, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    barra_viaje.pack(pady=0, padx=20, fill="x")
+    barra_8 = tk.Frame(lienzo_4, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_8.pack(pady=0, padx=20, fill="x")
 
     #------ botones de fechas---------
-    fecha1 = tk.Label(barra_viaje, text= "fecha 1", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    fecha1 = tk.Label(barra_8, text= "fecha 1", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
     fecha1.pack(side="left", padx=40 , pady=5)
 
-    fecha2 = tk.Label(barra_viaje, text= "fecha 2", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    fecha2 = tk.Label(barra_8, text= "fecha 2", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
     fecha2.pack(side="left", padx=40 , pady=5)
 
-    fecha3 = tk.Label(barra_viaje, text= "fecha 3", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    fecha3 = tk.Label(barra_8, text= "fecha 3", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
     fecha3.pack(side="left", padx=40 , pady=5)
 
-    fecha4 = tk.Label(barra_viaje, text= "fecha 4", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    fecha4 = tk.Label(barra_8, text= "fecha 4", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
     fecha4.pack(side="left", padx=40 , pady=5)
 
-    fecha5 = tk.Label(barra_viaje, text= "fecha 5", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    fecha5 = tk.Label(barra_8, text= "fecha 5", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
     fecha5.pack(side="left", padx=40 , pady=5)
 
     #----Barra de ordenar por------
-    barra_ord = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    barra_ord.pack(pady=0, padx=20, fill="x")
+    barra_9 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_9.pack(pady=0, padx=20, fill="x")
+
     # ----Botones de ordenar----------
-    ordenar = tk.Label(barra_ord, text= "ordenar por:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    ordenar = tk.Label(barra_9, text= "ordenar por:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
     ordenar.pack(side="left", padx=3, pady=3)
     
-    mejor_precio = tk.Label(barra_ord, text= "Mejor Precio ", relief="flat", bg="white", fg="black",highlightbackground="black", highlightthickness=1)
+    mejor_precio = tk.Label(barra_9, text= "Mejor Precio ", relief="flat", bg="white", fg="black",highlightbackground="black", highlightthickness=1)
     mejor_precio.pack(side="left", padx=3, pady=5)
 
-    vuelos_directos = tk.Label(barra_ord, text= "Vuelos directos", relief="flat", bg="white", fg="black",highlightbackground="black", highlightthickness=1)
+    vuelos_directos = tk.Label(barra_9, text= "Vuelos directos", relief="flat", bg="white", fg="black",highlightbackground="black", highlightthickness=1)
     vuelos_directos.pack(side="left", padx=3, pady=10)
 
     # ------ Barras de precios1 -------
@@ -411,12 +411,105 @@ def ventana_ofertas():
     Donde1 = tk.Label(precios1, text= "Desde", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
     Donde1.pack(side="right", padx=10 , pady=2)
 
-    barra_viaje1 = tk.Frame(precios1, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    barra_viaje1.pack(pady=20, padx=20, side="right")
-    COP1 = tk.Label(barra_viaje1, text="COP", bg="white")
+    barra_10 = tk.Frame(precios1, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_10.pack(pady=20, padx=20, side="right")
+    COP1 = tk.Label(barra_10, text="COP", bg="white")
     COP1.grid(row=0, column=0, padx=5, pady=2)
 
+    #-------Botón de selección-------
+    btn_pasar = tk.Button(ventana_ofertas, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_registro)
+    btn_pasar.pack(pady=10, padx=30, side="right")
 
+
+def nueva_ventana_registro():
+    ventana_registro = Tk() #Abrir la ventana nueva encima de la ventana principal
+    ventana_registro.title("Sky-Voyage")
+    ventana_registro.geometry("800x400")
+    ventana_registro.config(bg = "white")
+    ventana_registro.resizable(0, 0)
+
+    lienzo_5 = tk.Frame(ventana_registro, bg="white")
+    lienzo_5.pack(pady=40, fill="x")
+
+    cua_regist = tk.Frame(lienzo_5, bg="white")
+    cua_regist.pack(fill="x", padx=40, pady=0)
+    registro_t = tk.Label(cua_regist, text="Realizar un vuelo", bg="white", relief="flat")
+    registro_t.pack(side="left", padx=40, pady=0)
+
+    recuadro = tk.Frame(lienzo_5, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    recuadro.pack(fill="x", pady=10, padx=10)
+
+    genero_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    genero_c.grid(row=0, column=0, padx=1, pady=5)
+    genero_t = tk.Label(genero_c, text="Género", bg="white")
+    genero_t.grid(row=0, column=0, padx=5, pady=5)
+    genero = ttk.Combobox(genero_c, values=["Masculino", "Femenino"])
+    genero.current(0)
+    genero.grid(row=0, column=1, padx=5, pady=5)
+
+    primer_n= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    primer_n.grid(row=0, column=1, padx=1, pady=5)
+    nombre_t = tk.Label(primer_n, text="Primer Nombre", bg="white")
+    nombre_t.grid(row=0, column=0, padx=5, pady=5)
+    nombre = tk.Entry(primer_n)
+    nombre.grid(row=0, column=1, padx=5, pady=5)
+
+    primer_a = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    primer_a.grid(row=0, column=2, padx=1, pady=5)
+    apellido_t = tk.Label(primer_a, text="Primer Apellido", bg="white")
+    apellido_t.grid(row=0, column=0, padx=5, pady=5)
+    apellido = tk.Entry(primer_a)
+    apellido.grid(row=0, column=1, padx=5, pady=5)
+
+    iden_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    iden_c.grid(row=1, column=0, padx=1, pady=5)
+    identi_t = tk.Label(iden_c, text="Identificación", bg="white")
+    identi_t.grid(row=0, column=0, padx=5, pady=5)
+    identi = tk.Entry(iden_c)
+    identi.grid(row=0, column=1, padx=5, pady=5)
+
+    naci_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    naci_c.grid(row=1, column=1, padx=1, pady=5)
+    naci_t = tk.Label(naci_c, text="Nacionalidad", bg="white")
+    naci_t.grid(row=0, column=0,columnspan=1, padx=5, pady=5)
+    nacionalidad = tk.Entry(naci_c)
+    nacionalidad.grid(row=0, column=1, padx=5, pady=5)
+    
+    fecha_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    fecha_c.grid(row=1, column=2, padx=1, pady=5)
+    fecha_t = tk.Label(fecha_c, text="Fecha Nacimiento", bg="white", width=20)
+    fecha_t.grid(row=0, column=0, padx=5, pady=5)
+    fecha = tk.Entry(fecha_c)
+    fecha.grid(row=0, column=1, padx=5, pady=5)
+
+    tele_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    tele_c.grid(row=2, column=0, padx=1, pady=5)
+    tele_t = tk.Label(tele_c, text="Teléfono", bg="white")
+    tele_t.grid(row=0, column=0, padx=5, pady=5)
+    telefono = tk.Entry(tele_c)
+    telefono.grid(row=0, column=1, padx=5, pady=5)
+
+    correo_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    correo_c.grid(row=2, column=1, padx=1, pady=5)
+    correo_t = tk.Label(correo_c, text="Correo electrónico", bg="white", width=20)
+    correo_t.grid(row=0, column=0, padx=5, pady=5)
+    correo = tk.Entry(correo_c)
+    correo.grid(row=0, column=1, padx=5, pady=5)
+
+    asis_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    asis_c.grid(row=2, column=2, padx=1, pady=5)
+    asis_t = tk.Checkbutton(asis_c, text="Asistencia en el vuelo", bg="white")
+    asis_t.grid(row=0, column=0, padx=5, pady=5)
+
+    continuar = tk.Button(recuadro, text="Continuar", bg="red", fg="white", command=nueva_ventana_tarjeta)
+    continuar.grid(row=3, column=1, padx=5, pady=5)
+
+def nueva_ventana_tarjeta():
+    ventana_tarjeta = Tk() #Abrir la ventana nueva encima de la ventana principal
+    ventana_tarjeta.title("Sky-Voyage")
+    ventana_tarjeta.geometry("800x400")
+    ventana_tarjeta.config(bg = "white")
+    ventana_tarjeta.resizable(0, 0)
 
 
 
