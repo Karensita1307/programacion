@@ -4,6 +4,7 @@ import tkinter as tk #Se importa la libreria y se le da un título
 from tkinter import *  # Librería que importa todos los módulos de la clase
 from PIL import Image, ImageTk as itk #librería de imagenes
 from tkinter import ttk
+from tkinter import messagebox
 
 # ---------Ventana principal------------
 window = Tk()
@@ -156,8 +157,8 @@ matriz = [
 ]
 
 
-
 def nueva_ventana_vuelos():
+    global personas_cant, origen_txt, destino_txt
     #---Crear una nueva ventana---
     ventana_vuelos = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_vuelos.title("Sky-Voyage")
@@ -170,7 +171,7 @@ def nueva_ventana_vuelos():
     lienzo_2.pack(pady=40, fill="x")
 
     #----Barra de personas e ida----
-    barra = tk.Frame(lienzo_2, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra = tk.Frame(lienzo_2, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
     barra.pack(pady=0, padx=20, fill="x")
 
     #---------Botón de ida----------
@@ -178,25 +179,22 @@ def nueva_ventana_vuelos():
     solo_ida.pack(side="left", padx=5, pady=5)
 
     #-----Cantidad de personas------
-    barra_2 = tk.Frame(barra, bg="white", bd=0, relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
+    barra_2 = tk.Frame(barra, bg="white", relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
     barra_2.pack(pady=10, padx=10, side="right")   
     personas = tk.Label(barra_2, text="Personas:", bg="white")
     personas.pack (side="left", padx=5, pady=5)
-    personas_cant = ttk.Combobox(barra_2, values=[str(i) for i in range(1,11)], width=3)
-    personas_cant.current(0) #para al iniciar siempre empezar en la pocision 0 , osea 1
+    personas_g = tk.StringVar()
+    personas_cant = ttk.Combobox(barra_2, values=[str(i) for i in range(1,11)], width=3, textvariable=personas_g)
     personas_cant.pack(side="right", padx=5, pady=5)
 
-    global cantidad_personas
-    cantidad_personas = personas_cant
-
     #------marco de busqueda--------
-    barra_3 = tk.Frame(lienzo_2, bg="white", bd=2, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_3 = tk.Frame(lienzo_2, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
     barra_3.pack(side="top", pady=0, padx=20, fill="x")
-    busqueda = tk.Frame(barra_3, bg="white", bd=2, relief=tk.FLAT)
+    busqueda = tk.Frame(barra_3, bg="white", relief=tk.FLAT)
     busqueda.pack(side="bottom", pady=0, padx=20, fill="x")
 
     #-------------Origen------------
-    barra_4 = tk.Frame(barra_3, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_4 = tk.Frame(barra_3, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
     barra_4.pack(pady=20, padx=20, side="left")
     origen = tk.Label(barra_4, text="Origen", bg="white")
     origen.grid(row=0, column=0, padx=5, pady=2)
@@ -215,11 +213,12 @@ def nueva_ventana_vuelos():
     for ciudad in ciudades:
         ciudades_origen.append(ciudad) # Añadir las ciudades a la lista
     
-    origen_txt = ttk.Combobox(barra_4, values=ciudades_origen, width=20)
+    origen_g = tk.StringVar()
+    origen_txt = ttk.Combobox(barra_4, values=ciudades_origen, width=20, textvariable=origen_g)
     origen_txt.grid(row=1, column=1, padx=5, pady=2)
 
     #------------Destino------------
-    barra_5 = tk.Frame(barra_3, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_5 = tk.Frame(barra_3, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
     barra_5.pack(pady=20, padx=0, side="left")
     destino = tk.Label(barra_5, text="Destino", bg="white")
     destino.grid(row=0, column=0, padx=5, pady=2)
@@ -237,11 +236,13 @@ def nueva_ventana_vuelos():
     for des in ciudades:
         ciudades_destino.append(des) # Añadir las ciudades a la lista
 
-    destino_txt = ttk.Combobox(barra_5, values=ciudades_destino, width=20)
+    destino_g = tk.StringVar()
+    destino_txt = ttk.Combobox(barra_5, values=ciudades_destino, width=20, textvariable=destino_g)
     destino_txt.grid(row=1, column=1, padx=5, pady=2)
 
+
     #-------------Fecha---------------
-    barra_6 = tk.Frame(barra_3, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_6 = tk.Frame(barra_3, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
     barra_6.pack(pady=20, padx=20, side="right")
     fecha = tk.Label(barra_6, text="Fecha", bg="white")
     fecha.grid(row=0, column=0, padx=5, pady=2)
@@ -263,9 +264,19 @@ def nueva_ventana_vuelos():
     fecha_txt = ttk.Combobox(barra_6, values=fechas, width=25)
     fecha_txt.grid(row=1, column=1, padx=5, pady=2)
 
+    #----guardar----
+    guardar = tk.Checkbutton(busqueda, text="Guardar datos", command=guardar_selecciones)
+    guardar.grid(row=0, column=0, padx=5, pady=2)
+
     #---------Botón Buscar-----------
     btn_buscar = tk.Button(busqueda, text="Buscar", bg="red", fg="white", command=nueva_ventana_asientos)
-    btn_buscar.pack(pady=20)
+    btn_buscar.grid(row=1, column=5, padx=5, pady=2)
+
+def guardar_selecciones():
+    global ori, des, cant
+    des = destino_txt.get()    
+    ori = origen_txt.get()
+    cant = int(personas_cant.get())
 
 def nueva_ventana_asientos():
     #-------Crear una nueva ventana--------
@@ -310,9 +321,13 @@ def nueva_ventana_asientos():
         for c in range(num_columnas):
             clase = "Aluminio" if r >= 8 else "Diamante" if r >= 4 else "Premium"
             color = "lightcoral" if clase == "Premium" else "brown" if clase == "Diamante" else "red"
-            btn = tk.Checkbutton(marco_asientos, bg=color, width=2, height=1, relief="flat")
+            btn = tk.Button(marco_asientos, bg=color, width=2, height=1)
             btn.grid(row=r+1, column=c+1, padx=2, pady=2)
+            for p in range(cant):  
+                if p != cant:
+                    btn.config(bg="green")
             
+
     #-----Crear las etiquetas para las clases------
     lbl_premium = tk.Label(marco_clases, text="Premium", bg="lightcoral", width=10)
     lbl_premium.pack(pady=40)
@@ -322,10 +337,13 @@ def nueva_ventana_asientos():
 
     lbl_aluminio = tk.Label(marco_clases, text="Aluminio", bg="red", width=10)
     lbl_aluminio.pack(pady=40)
-
+        
     #-------Botón de selección-------
     btn_seleccionar = tk.Button(ventana_asientos, text="Seleccionar", bg="red", fg="white", command=ventana_ofertas)
     btn_seleccionar.pack(pady=10, padx=30, side="right")
+
+    guardar = tk.Checkbutton(ventana_asientos, text="Guardar datos")
+    guardar.pack(pady=10, padx=30, side="bottom")
 
 def ventana_ofertas():
     ventana_ofertas = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
@@ -335,8 +353,68 @@ def ventana_ofertas():
     ventana_ofertas.resizable(0, 0)
     ventana_ofertas.iconbitmap("avion.ico")
 
+    # ------- Se crea un lienzo---------
+    lienzo_4 = tk.Frame(ventana_ofertas, bg = "white")
+    lienzo_4.pack(pady=40, fill="x")
 
+    #------Etiquetas y entradas---------
+    # ------ Barra de ida -------
+    barra_ofertas = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_ofertas.pack(pady=0, padx=20, fill="x")
 
+    #------ boton de Ida---------
+    ida_ofertas = tk.Label(barra_ofertas, text= "   Ida:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    ida_ofertas.pack(side="left", padx=5, pady=5)
+
+    text = (f"{ori} a {des}")
+    viaje = tk.Label(barra_ofertas, text=text , relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    viaje.pack(side="left", padx=5, pady=8)
+
+   # ------ Barra de fechas -------
+    barra_viaje = tk.Frame(lienzo_4, bg="white", bd=0, relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_viaje.pack(pady=0, padx=20, fill="x")
+
+    #------ botones de fechas---------
+    fecha1 = tk.Label(barra_viaje, text= "fecha 1", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    fecha1.pack(side="left", padx=40 , pady=5)
+
+    fecha2 = tk.Label(barra_viaje, text= "fecha 2", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    fecha2.pack(side="left", padx=40 , pady=5)
+
+    fecha3 = tk.Label(barra_viaje, text= "fecha 3", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    fecha3.pack(side="left", padx=40 , pady=5)
+
+    fecha4 = tk.Label(barra_viaje, text= "fecha 4", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    fecha4.pack(side="left", padx=40 , pady=5)
+
+    fecha5 = tk.Label(barra_viaje, text= "fecha 5", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    fecha5.pack(side="left", padx=40 , pady=5)
+
+    #----Barra de ordenar por------
+    barra_ord = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_ord.pack(pady=0, padx=20, fill="x")
+    # ----Botones de ordenar----------
+    ordenar = tk.Label(barra_ord, text= "ordenar por:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    ordenar.pack(side="left", padx=3, pady=3)
+    
+    mejor_precio = tk.Label(barra_ord, text= "Mejor Precio ", relief="flat", bg="white", fg="black",highlightbackground="black", highlightthickness=1)
+    mejor_precio.pack(side="left", padx=3, pady=5)
+
+    vuelos_directos = tk.Label(barra_ord, text= "Vuelos directos", relief="flat", bg="white", fg="black",highlightbackground="black", highlightthickness=1)
+    vuelos_directos.pack(side="left", padx=3, pady=10)
+
+    # ------ Barras de precios1 -------
+    precios1 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    precios1.pack(pady=0, padx=20, fill="x")
+
+    #------ botones de viaje1---------
+    Donde1 = tk.Label(precios1, text= "Desde", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    Donde1.pack(side="right", padx=10 , pady=2)
+
+    barra_viaje1 = tk.Frame(precios1, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_viaje1.pack(pady=20, padx=20, side="right")
+    COP1 = tk.Label(barra_viaje1, text="COP", bg="white")
+    COP1.grid(row=0, column=0, padx=5, pady=2)
 
 
 
