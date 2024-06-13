@@ -157,9 +157,14 @@ matriz = [
 ['V560', '2024-06-26', '08:41:00', '11:20:00', 118816, 675485, 2104917, 'Santa Marta', 'Cali'],
 ]
 
+def volver():
+    ventana_vuelos.destroy()
+    window.deiconify()
 
 def nueva_ventana_vuelos():
-    global personas_cant, origen_txt, destino_txt, fecha_txt
+    global ventana_vuelos, personas_cant, origen_txt, destino_txt, fecha_txt
+    window.withdraw()
+
     #---Crear una nueva ventana---
     ventana_vuelos = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_vuelos.title("Sky-Voyage")
@@ -276,6 +281,10 @@ def nueva_ventana_vuelos():
     btn_buscar = tk.Button(busqueda, text="Buscar", bg="red", fg="white", command=nueva_ventana_asientos)
     btn_buscar.grid(row=1, column=5, padx=5, pady=2)
 
+        #---------Botón Volver-----------
+    btn_volver = tk.Button(busqueda, text="Atrás", bg="red", fg="white", command=volver)
+    btn_volver.grid(row=1, column=4, padx=5, pady=2)
+
 def actualizar_fechas_disponibles():
     origen_seleccionado = origen_txt.get()
     destino_seleccionado = destino_txt.get()
@@ -310,10 +319,14 @@ def cambiar_estado(boton):
             asientos_seleccionados += 1
         else:
             tk.messagebox.showinfo("Error", f"Solo se pueden seleccionar {cant} asientos.")
-            
+
+def volver_1():
+    ventana_asientos.destroy()
+    ventana_vuelos.deiconify()
 
 def nueva_ventana_asientos():
-    global color
+    global ventana_asientos, color
+    ventana_vuelos.withdraw()
     #-------Crear una nueva ventana--------
     ventana_asientos = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_asientos.title("Sky-Voyage")
@@ -367,7 +380,11 @@ def nueva_ventana_asientos():
         
     #-------Botón de selección-------
     btn_seleccionar = tk.Button(ventana_asientos, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_ofertas)
-    btn_seleccionar.pack(pady=10, padx=30, side="right")
+    btn_seleccionar.pack(pady=10, padx=10, side="right")
+
+    #----------Botón volver----------
+    btn_volver = tk.Button(ventana_asientos, text="Atrás", bg="red", fg="white", command=volver_1)
+    btn_volver.pack(pady=10, padx=0, side="right")
 
     guardar_asientos = tk.Checkbutton(ventana_asientos, text="Guardar datos")
     guardar_asientos.pack(pady=10, padx=30, side="bottom")
@@ -375,65 +392,56 @@ def nueva_ventana_asientos():
 precio_menor = []
 precio_regular = []
 precio_mayor = []
-menor = []
-regular = []
-mayor = []
 
 def precios():
-    global precio_menor, precio_mayor, precio_regular, menor, mayor, regular
+    global precio_menor, precio_mayor, precio_regular
 
     for vuelo in matriz: 
         if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
             precio_menor.append(vuelo[4])
-            if vuelo[4] == precio_menor:
-                menor.append(vuelo[2])
-
 
     for vuelo in matriz:
         if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
             precio_regular.append(vuelo[5])
-            menor.append(vuelo[2])
-            menor.append(vuelo[3])
 
     for vuelo in matriz:
         if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
             precio_mayor.append(vuelo[6])
-            menor.append(vuelo[2])
-            menor.append(vuelo[3])
+
+menor = []
+regular = []
+mayor = []
+
+def horas():
+    global menor, mayor, regular
+
+    for vuelo in matriz:
+        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_menor:
+            ida = vuelo[2]
+            vuelta = vuelo[3]
+            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
+            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
+            menor.append(hora_ida)
+            menor.append(hora_vuelta)
 
 
+    for vuelo in matriz:
+        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_regular:
+            ida = vuelo[2]
+            vuelta = vuelo[3]
+            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
+            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
+            regular.append(hora_ida)
+            regular.append(hora_vuelta)           
 
-# def horas():
-#     global 
-    
-#     for vuelo in matriz:
-#         if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_menor:
-#             ida = vuelo[2]
-#             vuelta = vuelo[3]
-#             hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
-#             hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
-#             menor.append(hora_ida)
-#             menor.append(hora_vuelta)
-
-
-    # for vuelo in matriz:
-    #     if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_regular:
-    #         ida = vuelo[2]
-    #         vuelta = vuelo[3]
-    #         hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
-    #         hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
-    #         regular.append(hora_ida)
-    #         regular.append(hora_vuelta)           
-
-    # for vuelo in matriz:
-    #     if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_mayor:
-    #         ida = vuelo[2]
-    #         vuelta = vuelo[3]
-    #         hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
-    #         hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
-    #         mayor.append(hora_ida)
-    #         mayor.append(hora_vuelta)      
-
+    for vuelo in matriz:
+        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_mayor:
+            ida = vuelo[2]
+            vuelta = vuelo[3]
+            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
+            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
+            mayor.append(hora_ida)
+            mayor.append(hora_vuelta)      
 
 def calcular_tiempo_transcurrido(hora_inicio, hora_fin):
     # Convertir las horas de cadena a objetos datetime
@@ -449,7 +457,14 @@ def calcular_tiempo_transcurrido(hora_inicio, hora_fin):
     
     return horas, minutos
 
+def volver_2():
+    ventana_ofertas.destroy()
+    ventana_asientos.deiconify()
+
 def nueva_ventana_ofertas():
+    global ventana_ofertas
+    ventana_asientos.withdraw()
+
     ventana_ofertas = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_ofertas.title("Sky-Voyage")
     ventana_ofertas.geometry("800x500")
@@ -534,14 +549,22 @@ def nueva_ventana_ofertas():
     vuelo_3 = tk.Button(barra_9, relief=tk.RAISED)
     vuelo_3.pack(pady=5, padx=10, fill="x")
 
-
-
-
     #-------Botón de selección-------
     btn_pasar = tk.Button(ventana_ofertas, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_reserva)
-    btn_pasar.pack(pady=10, padx=30, side="right")
+    btn_pasar.pack(pady=10, padx=10, side="right")
+
+    #-------Botón de volver-------
+    btn_volver = tk.Button(ventana_ofertas, text="Atrás", bg="red", fg="white", command=volver_2)
+    btn_volver.pack(pady=10, padx=0, side="right")
+
+def volver_3():
+    ventana_reserva.destroy()
+    ventana_ofertas.deiconify()
 
 def nueva_ventana_reserva():
+    global ventana_reserva
+    ventana_ofertas.withdraw()
+
     ventana_reserva = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_reserva.title("Sky-Voyage")
     ventana_reserva.geometry("800x500")
@@ -568,7 +591,17 @@ def nueva_ventana_reserva():
     btn_pas = tk.Button(ventana_reserva, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_registro)
     btn_pas.pack(pady=10, padx=30, side="right")
 
+    btn_vol = tk.Button(ventana_reserva, text="Atrás", bg="red", fg="white", command=volver_3)
+    btn_vol.pack(pady=10, padx=30, side="right")
+
+def volver_4():
+    ventana_registro.destroy()
+    ventana_reserva.deiconify()
+
 def nueva_ventana_registro():
+    global ventana_registro
+    ventana_reserva.withdraw()
+
     ventana_registro = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_registro.title("Sky-Voyage")
     ventana_registro.geometry("800x400")
@@ -652,7 +685,17 @@ def nueva_ventana_registro():
     continuar = tk.Button(recuadro, text="Continuar", bg="red", fg="white", command=nueva_ventana_tarjeta)
     continuar.grid(row=3, column=1, padx=5, pady=5)
 
+    volver = tk.Button(recuadro, text="Atrás", bg="red", fg="white", command=volver_4)
+    volver.grid(row=3, column=0, padx=5, pady=5)
+
+def volver_5():
+    ventana_tarjeta.destroy()
+    ventana_registro.deiconify()
+
 def nueva_ventana_tarjeta():
+    global ventana_tarjeta
+    ventana_registro.withdraw()
+
     ventana_tarjeta = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_tarjeta.title("Sky-Voyage")
     ventana_tarjeta.geometry("800x400")
