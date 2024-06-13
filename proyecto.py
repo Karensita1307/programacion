@@ -372,59 +372,67 @@ def nueva_ventana_asientos():
     guardar_asientos = tk.Checkbutton(ventana_asientos, text="Guardar datos")
     guardar_asientos.pack(pady=10, padx=30, side="bottom")
 
-def precios():
-    global precio_menor, precio_mayor, precio_regular
-    precio_menor = []
-    precio_regular = []
-    precio_mayor = []
+precio_menor = []
+precio_regular = []
+precio_mayor = []
+menor = []
+regular = []
+mayor = []
 
-    for vuelo in matriz:
+def precios():
+    global precio_menor, precio_mayor, precio_regular, menor, mayor, regular
+
+    for vuelo in matriz: 
         if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
             precio_menor.append(vuelo[4])
+            if vuelo[4] == precio_menor:
+                menor.append(vuelo[2])
+
 
     for vuelo in matriz:
         if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
             precio_regular.append(vuelo[5])
+            menor.append(vuelo[2])
+            menor.append(vuelo[3])
 
     for vuelo in matriz:
         if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
             precio_mayor.append(vuelo[6])
+            menor.append(vuelo[2])
+            menor.append(vuelo[3])
+
+
+
+# def horas():
+#     global 
     
+#     for vuelo in matriz:
+#         if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_menor:
+#             ida = vuelo[2]
+#             vuelta = vuelo[3]
+#             hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
+#             hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
+#             menor.append(hora_ida)
+#             menor.append(hora_vuelta)
 
-def horas():
-    global menor, mayor, regular
-    menor = []
-    regular = []
-    mayor = []
 
-    for vuelo in matriz:
-        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_menor:
-            ida = vuelo[2]
-            vuelta = vuelo[3]
-            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
-            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
-            menor.append(hora_ida)
-            menor.append(hora_vuelta)
+    # for vuelo in matriz:
+    #     if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_regular:
+    #         ida = vuelo[2]
+    #         vuelta = vuelo[3]
+    #         hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
+    #         hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
+    #         regular.append(hora_ida)
+    #         regular.append(hora_vuelta)           
 
-    for vuelo in matriz:
-        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_regular:
-            ida = vuelo[2]
-            vuelta = vuelo[3]
-            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
-            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
-            regular.append(hora_ida)
-            regular.append(hora_vuelta)           
-
-    for vuelo in matriz:
-        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
-            ida = vuelo[2]
-            vuelta = vuelo[3]
-            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
-            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
-            mayor.append(hora_ida)
-            mayor.append(hora_vuelta)        
-
-    return menor, mayor, regular
+    # for vuelo in matriz:
+    #     if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_mayor:
+    #         ida = vuelo[2]
+    #         vuelta = vuelo[3]
+    #         hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
+    #         hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
+    #         mayor.append(hora_ida)
+    #         mayor.append(hora_vuelta)      
 
 
 def calcular_tiempo_transcurrido(hora_inicio, hora_fin):
@@ -478,7 +486,7 @@ def nueva_ventana_ofertas():
 
     #-------Barra para vuelos-------
     barra_9 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    barra_9.pack(pady=5, padx=10, fill="x")
+    barra_9.pack(pady=5, padx=20, fill="x")
 
     #------primer posible-------------
     vuelo_1 = tk.Frame(barra_9, relief=tk.RAISED, bg="white")
@@ -506,7 +514,17 @@ def nueva_ventana_ofertas():
 
     origen = des[:3].upper() # .upper para pasarlo a mayusculas
     ciudad_1 = tk.Label(vuelo_1, text=origen, bg="white")
-    ciudad_1.grid(row=1, column=0, padx=5, pady=1)
+    ciudad_1.grid(row=1, column=2, padx=5, pady=1)
+
+    precio = tk.Frame(vuelo_1, bg="gray", relief=tk.FLAT)
+    precio.grid(row=0, column=3, padx=5, pady=1)
+
+    desde = tk.Label(precio, text="Desde", bg="gray", relief=tk.FLAT)
+    desde.grid(row=0, column=0, padx=5, pady=1)
+
+    precio_m = precio_menor[0]
+    valor = tk.Label(precio, text=precio_m, bg="gray", relief=tk.FLAT)
+    valor.grid(row=1, column=1, padx=5, pady=1)
 
     #------Segundo posible------------
     vuelo_2 = tk.Button(barra_9, relief=tk.RAISED)
@@ -655,5 +673,7 @@ def nueva_ventana_tarjeta():
 
     resumen = tk.Label(contenedor_2, text="Resumen de compra", bg="white")
     resumen.pack(side="top", pady=5, padx=1)
+
+
 
 window.mainloop()
