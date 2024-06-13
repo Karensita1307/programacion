@@ -3,8 +3,9 @@
 import tkinter as tk #Se importa la libreria y se le da un título
 from tkinter import *  # Librería que importa todos los módulos de la clase
 from PIL import Image, ImageTk as itk #librería de imagenes
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import ttk # LLibrería para los combobox y mas comandos
+from tkinter import messagebox # Ventana emergente
+from datetime import datetime # Para el tiempo
 
 # ---------Ventana principal------------
 window = Tk()
@@ -288,7 +289,7 @@ def actualizar_fechas_disponibles():
     fecha_txt['values'] = tuple(fechas_disponibles)
 
 def guardar_selecciones():
-    global ori, des, cant
+    global ori, des, cant, fech
     des = destino_txt.get()    
     ori = origen_txt.get()
     cant = int(personas_cant.get())
@@ -371,6 +372,75 @@ def nueva_ventana_asientos():
     guardar_asientos = tk.Checkbutton(ventana_asientos, text="Guardar datos")
     guardar_asientos.pack(pady=10, padx=30, side="bottom")
 
+def precios():
+    global precio_menor, precio_mayor, precio_regular
+    precio_menor = []
+    precio_regular = []
+    precio_mayor = []
+
+    for vuelo in matriz:
+        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
+            precio_menor.append(vuelo[4])
+
+    for vuelo in matriz:
+        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
+            precio_regular.append(vuelo[5])
+
+    for vuelo in matriz:
+        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
+            precio_mayor.append(vuelo[6])
+    
+
+def horas():
+    global menor, mayor, regular
+    menor = []
+    regular = []
+    mayor = []
+
+    for vuelo in matriz:
+        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_menor:
+            ida = vuelo[2]
+            vuelta = vuelo[3]
+            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
+            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
+            menor.append(hora_ida)
+            menor.append(hora_vuelta)
+
+    for vuelo in matriz:
+        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_regular:
+            ida = vuelo[2]
+            vuelta = vuelo[3]
+            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
+            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
+            regular.append(hora_ida)
+            regular.append(hora_vuelta)           
+
+    for vuelo in matriz:
+        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
+            ida = vuelo[2]
+            vuelta = vuelo[3]
+            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
+            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
+            mayor.append(hora_ida)
+            mayor.append(hora_vuelta)        
+
+    return menor, mayor, regular
+
+
+def calcular_tiempo_transcurrido(hora_inicio, hora_fin):
+    # Convertir las horas de cadena a objetos datetime
+    hora_inicio_obj = datetime.strptime(hora_inicio, "%H:%M")
+    hora_fin_obj = datetime.strptime(hora_fin, "%H:%M")
+    
+    # Calcular la diferencia de tiempo
+    tiempo_transcurrido = hora_fin_obj - hora_inicio_obj
+    
+    # Calcular el tiempo transcurrido en horas y minutos
+    horas = tiempo_transcurrido.seconds // 3600
+    minutos = (tiempo_transcurrido.seconds % 3600) // 60
+    
+    return horas, minutos
+
 def nueva_ventana_ofertas():
     ventana_ofertas = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_ofertas.title("Sky-Voyage")
@@ -400,27 +470,54 @@ def nueva_ventana_ofertas():
     barra_8.pack(pady=0, padx=20, fill="x")
 
     # ----Botones de ordenar----------
-    ordenar = tk.Label(barra_8, text= "ordenar por:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    ordenar = tk.Label(barra_8, text= "ordenado por:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
     ordenar.pack(side="left", padx=3, pady=3)
     
     mejor_precio = tk.Button(barra_8, text= "Mejor Precio ", relief="solid", bg="white")
     mejor_precio.pack(side="left", padx=3, pady=5)
 
-    vuelos_directos = tk.Button(barra_8, text= "Vuelos directos", relief="solid", bg="white")
-    vuelos_directos.pack(side="left", padx=3, pady=10)
+    #-------Barra para vuelos-------
+    barra_9 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_9.pack(pady=5, padx=10, fill="x")
 
-    # ------ Barras de precios1 -------
-    precios1 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    precios1.pack(pady=0, padx=20, fill="x")
+    #------primer posible-------------
+    vuelo_1 = tk.Frame(barra_9, relief=tk.RAISED, bg="white")
+    vuelo_1.pack(pady=5, padx=10, fill="x")
 
-    #------ botones de viaje1---------
-    Donde1 = tk.Label(precios1, text= "Desde", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
-    Donde1.pack(side="right", padx=10 , pady=2)
+    texx = menor[0]
+    hora_ida = tk.Label(vuelo_1, text=texx, bg="white")
+    hora_ida.grid(row=0, column=0, padx=5, pady=1)
 
-    barra_9 = tk.Frame(precios1, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    barra_9.pack(pady=20, padx=20, side="right")
-    COP1 = tk.Label(barra_9, text="COP", bg="white")
-    COP1.grid(row=0, column=0, padx=5, pady=2)
+    origen = ori[:3].upper() # .upper para pasarlo a mayusculas
+    ciudad_1 = tk.Label(vuelo_1, text=origen, bg="white")
+    ciudad_1.grid(row=1, column=0, padx=5, pady=1)
+
+    lineas = tk.Label(vuelo_1, text="-------------------", bg="white")
+    lineas.grid(row=0, column=1, padx=5, pady=1)
+
+    horas, minutos = calcular_tiempo_transcurrido(menor[0], menor[1])
+    texto = (f"{horas}h {minutos}m")
+    tiempo = tk.Label(vuelo_1, text=texto, bg="white")
+    tiempo.grid(row=1, column=1, padx=5, pady=1)
+
+    texxt = menor[1]
+    hora_ida = tk.Label(vuelo_1, text=texxt, bg="white")
+    hora_ida.grid(row=0, column=2, padx=5, pady=1)
+
+    origen = des[:3].upper() # .upper para pasarlo a mayusculas
+    ciudad_1 = tk.Label(vuelo_1, text=origen, bg="white")
+    ciudad_1.grid(row=1, column=0, padx=5, pady=1)
+
+    #------Segundo posible------------
+    vuelo_2 = tk.Button(barra_9, relief=tk.RAISED)
+    vuelo_2.pack(pady=5, padx=10, fill="x")
+
+    #------Tercer posible-------------
+    vuelo_3 = tk.Button(barra_9, relief=tk.RAISED)
+    vuelo_3.pack(pady=5, padx=10, fill="x")
+
+
+
 
     #-------Botón de selección-------
     btn_pasar = tk.Button(ventana_ofertas, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_reserva)
@@ -476,7 +573,7 @@ def nueva_ventana_registro():
     genero_c.grid(row=0, column=0, padx=1, pady=5)
     genero_t = tk.Label(genero_c, text="Género", bg="white")
     genero_t.grid(row=0, column=0, padx=1, pady=5)
-    genero = ttk.Combobox(genero_c, values=["Masculino", "Femenino"])
+    genero = ttk.Combobox(genero_c, values=["Masculino", "Femenino","Otro"])
     genero.current(0)
     genero.grid(row=0, column=1, padx=1, pady=5)
 
