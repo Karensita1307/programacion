@@ -4,7 +4,7 @@ import tkinter as tk #Se importa la libreria y se le da un título
 from tkinter import *  # Librería que importa todos los módulos de la clase
 from PIL import Image, ImageTk as itk #librería de imagenes
 from tkinter import ttk # LLibrería para los combobox y mas comandos
-from tkinter import messagebox, Canvas # Ventana emergente y dar geometria
+from tkinter import messagebox # Ventana emergente y dar geometria
 from datetime import datetime# Para el tiempo
 import random, string, re
 
@@ -229,6 +229,7 @@ def generar_codigo_checkin():
     with open("datos_usuario.txt", "a") as file:
         file.write(f"{codigo},{apellido}\n")
     messagebox.showinfo(title="Código", message=f"Tu código es {codigo}")
+    ventana_registro.withdraw()
     return codigo
 
 def validar():
@@ -253,7 +254,7 @@ def validar():
     corre = correo.get()
 
 def nueva_ventana_registro():
-    global ventana_registro, telefono, correo, nombre, apellido, identi, nacionalidad, fecha, asis_t, genero
+    global ventana_registro, telefono, correo, identi, nacionalidad, fecha, asis_t, genero, nombre1, apellido1, nombre, apellido
     window.withdraw()
 
     ventana_registro = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
@@ -327,17 +328,25 @@ def nueva_ventana_registro():
     correo_c.grid(row=2, column=1, padx=1, pady=5)
     correo_t = tk.Label(correo_c, text="Correo electrónico", bg="white", width=20)
     correo_t.grid(row=0, column=0, padx=1, pady=5)
+    
     correo = tk.Entry(correo_c)
     correo.grid(row=0, column=1, padx=1, pady=5)
 
     asis_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
     asis_c.grid(row=2, column=2, padx=1, pady=5)
+    sis_t = tk.Label(asis_c, text="Asistencia", bg="white")
+    sis_t.grid(row=0, column=0, padx=1, pady=5)
     asis_t = ttk.Combobox(asis_c, values=["Si", "No"])
-    asis_t.grid(row=0, column=0, padx=1, pady=5)
+    asis_t.grid(row=0, column=1, padx=1, pady=5)
 
-    continuar = tk.Button(recuadro, text="Continuar", bg="red", fg="white", command=validar)
+    def guardar_datos():
+        global nombre1,apellido1
+        # Almacenar los valores de nombre y apellido cuando se presiona el botón "Guardar"
+        nombre1 = nombre.get()
+        apellido1 = apellido.get()
+
+    continuar = tk.Button(recuadro, text="Continuar", bg="red", fg="white", command=lambda: [guardar_datos(), validar()])
     continuar.grid(row=3, column=1, padx=5, pady=5)
-
 
 def volver_1():
     ventana_vuelos.destroy()
@@ -578,8 +587,10 @@ def guardar_clase():
         return aluminio
     elif clase == "Diamante" if fila >= 4 else "premium":
         diamante = "Diamante"
+        return diamante
     else:
         premium = "premium"
+        return premium
 
 precio_menor = []
 precio_regular = []
@@ -919,54 +930,86 @@ def nueva_ventana_tarjeta():
     btn_vol = tk.Button(ventana_tarjeta, text="Atrás", bg="red", fg="white", command=volver_5)
     btn_vol.pack(pady=5, padx=10, side="bottom")
 
+
 def nueva_ventana_ticket():
-    ventana_tarjeta.withdraw() 
-
-    ventana_ticket = tk.Toplevel(window)  
-    ventana_ticket.title("Sky-Voyage")
-    ventana_ticket.geometry("700x280")
-    ventana_ticket.config(bg="white")
-    ventana_ticket.resizable(0, 0)
-
-    # -------- lienzo --------------
-    lienzo9 = tk.Frame(ventana_ticket, bg="white")
-    lienzo9.pack(pady=10, padx=10)
-
-    # -------- barra lateral --------------
-    barra_lateral = tk.Frame(lienzo9, bg="red", width=80)
-    barra_lateral.pack(side = "left", fill="y")
     
-    encabezado = tk.Frame(lienzo9, bg="black", height=40)
-    encabezado.pack(fill="x")
-    tk.Label(encabezado, text="Sky-Voyage", bg="red", fg="white", font=("Helvetica", 12)).pack(pady=5)
+    ventana_tiquete = tk.Toplevel(window)
+    ventana_tiquete.title("Sky-Voyage - Tiquete")
+    ventana_tiquete.geometry("1000x600")
+    ventana_tiquete.iconbitmap("avion.ico") 
 
-    # -------- barra superior ------------
-    encabezado = tk.Frame(lienzo9, bg="black", height=40)
-    encabezado.pack(fill="x")
-    tk.Label(encabezado, text="Pase de abordaje", bg="black", fg="white", font=("Helvetica", 12)).pack(pady=5)
+    # Create a frame for the airline logo
+    logo_frame = tk.Frame(ventana_tiquete, bg="red")
+    logo_frame.pack(side="left", fill="y")
 
-    # ------------ Contenido principal ------------------
-    contenido = tk.Frame(lienzo9, bg="white")
-    contenido.pack(pady=10, padx=10, fill="both", expand=True)
+    # Create the airline logo label
+    logo_label = tk.Label(logo_frame, text="", font=("Arial", 24, "bold"), fg="white", bg="red")
+    logo_label.pack(pady=10)
 
-    # Mostrar los valores de los campos de texto
-    tk.Label(contenido, text="Nombre pasajero:", bg="white", font=("Helvetica", 12)).grid(row=0, column=0, sticky="w", pady=5)
-    tk.Label(contenido, text=f"{nom} {ape}", bg="white", font=("Helvetica", 12)).grid(row=0, column=1, sticky="w", pady=5)
+    # Create a frame for the boarding pass details
+    boarding_pass_frame = tk.Frame(ventana_tiquete, bg="white")
+    boarding_pass_frame.pack(side="right", fill="both", expand=True)
 
-    tk.Label(contenido, text="Origen:", bg="white", font=("Helvetica", 12)).grid(row=1, column=0, sticky="w", pady=5)
-    tk.Label(contenido, text=ori, bg="white", font=("Helvetica", 12)).grid(row=1, column=1, sticky="w", pady=5)
+    # Create the boarding pass header
+    header_frame = tk.Frame(boarding_pass_frame, bg="red")
+    header_frame.pack(fill="x")
 
-    tk.Label(contenido, text="Destino:", bg="white", font=("Helvetica", 12)).grid(row=2, column=0, sticky="w", pady=5)
-    tk.Label(contenido, text=des, bg="white", font=("Helvetica", 12)).grid(row=2, column=1, sticky="w", pady=5)
+    # Create the boarding pass header label
+    header_label = tk.Label(header_frame, text="Pase de abordaje", font=("Arial", 16, "bold"), fg="white", bg="navy blue")
+    header_label.pack(pady=10)
 
-    tk.Label(contenido, text="Vuelo:", bg="white", font=("Helvetica", 12)).grid(row=3, column=0, sticky="w", pady=5)
-    tk.Label(contenido, text=vuelo2, bg="white", font=("Helvetica", 12)).grid(row=3, column=1, sticky="w", pady=5)
+    # Create a frame for the passenger details
+    passenger_details_frame = tk.Frame(boarding_pass_frame, bg="white")
+    passenger_details_frame.pack(pady=10)
 
-    tk.Label(contenido, text="Fecha:", bg="white", font=("Helvetica", 12)).grid(row=1, column=2, sticky="w", padx=20)
-    tk.Label(contenido, text=fech, bg="white", font=("Helvetica", 12)).grid(row=1, column=3, sticky="w", pady=5)
+    # Create the passenger name label
+    passenger_name_label = tk.Label(passenger_details_frame, text="Nombre Pasajero", font=("Arial", 12))
+    passenger_name_label.grid(row=0, column=0, sticky="w")
 
-    tk.Label(contenido, text="Hora:", bg="white", font=("Helvetica", 12)).grid(row=2, column=2, sticky="w", padx=20)
-    tk.Label(contenido, text=hora_s, bg="white", font=("Helvetica", 12)).grid(row=2, column=3, sticky="w", pady=5)
+    # Create the passenger name entry
+    passenger_name_entry = tk.Entry(passenger_details_frame, font=("Arial", 12))
+    passenger_name_entry.insert(0, (f"{nombre1} {apellido1}"))
+    passenger_name_entry.grid(row=0, column=1, sticky="w")
+
+    # Create frames for the flight details
+    flight_details_frame = tk.Frame(boarding_pass_frame, bg="white")
+    flight_details_frame.pack(pady=10)
+
+    # Create labels and entries for origin, destination, flight number, date, and time
+    origin_label = tk.Label(flight_details_frame, text="Origen", font=("Arial", 12))
+    origin_label.grid(row=0, column=0, sticky="w")
+
+    origin_entry = tk.Entry(flight_details_frame, font=("Arial", 12))
+    origin_entry.insert(0, origen_seleccionado)
+    origin_entry.grid(row=0, column=1, sticky="w")
+
+    destination_label = tk.Label(flight_details_frame, text="Destino", font=("Arial", 12))
+    destination_label.grid(row=1, column=0, sticky="w")
+
+    destination_entry = tk.Entry(flight_details_frame, font=("Arial", 12))
+    destination_entry.insert(0, destino_seleccionado)
+    destination_entry.grid(row=1, column=1, sticky="w")
+
+    flight_number_label = tk.Label(flight_details_frame, text="Vuelo", font=("Arial", 12))
+    flight_number_label.grid(row=0, column=2, sticky="w")
+
+    flight_number_entry = tk.Entry(flight_details_frame, font=("Arial", 12))
+    flight_number_entry.insert(0, codigo[0])
+    flight_number_entry.grid(row=0, column=3, sticky="w")
+
+    date_label = tk.Label(flight_details_frame, text="Fecha", font=("Arial", 12))
+    date_label.grid(row=1, column=2, sticky="w")
+
+    date_entry = tk.Entry(flight_details_frame, font=("Arial", 12))
+    date_entry.insert(0, fecha_g.get())
+    date_entry.grid(row=1, column=3, sticky="w")
+
+    time_label = tk.Label(flight_details_frame, text="Hora", font=("Arial", 12))
+    time_label.grid(row=2, column=2, sticky="w")
+
+    time_entry = tk.Entry(flight_details_frame, font=("Arial", 12))
+    time_entry.insert(0, hora_s[0])
+    time_entry.grid(row=2, column=3, sticky="w")
 
 
 window.mainloop()
