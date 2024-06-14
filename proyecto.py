@@ -4,8 +4,8 @@ import tkinter as tk #Se importa la libreria y se le da un título
 from tkinter import *  # Librería que importa todos los módulos de la clase
 from PIL import Image, ImageTk as itk #librería de imagenes
 from tkinter import ttk # LLibrería para los combobox y mas comandos
-from tkinter import messagebox # Ventana emergente
-from datetime import datetime # Para el tiempo
+from tkinter import messagebox, Canvas # Ventana emergente y dar geometria
+from datetime import datetime# Para el tiempo
 import random, string, re
 
 # ---------Ventana principal------------
@@ -204,7 +204,7 @@ for i in range(len(matriz)):
         ciudad_destino.append(matriz[i][8])
 
 def guardar_datos_registro():
-    global ape
+    global ape, nom
     nom = nombre.get()
     ape = apellido.get()
     gen = genero.get()
@@ -743,13 +743,11 @@ def nueva_ventana_reserva():
     btn_continuar_pago = tk.Button(ventana_reserva, text="Continuar con el Pago", bg="red3", fg="white", command=nueva_ventana_tarjeta)
     btn_continuar_pago.pack(pady=20)
 
-    btn_vol = tk.Button(ventana_vuelos, text="Atrás", bg="red", fg="white", command=volver_4)
-    btn_vol.pack(pady=10, padx=30, side="bottom")
+    btn_vol = tk.Button(ventana_reserva, text="Atrás", bg="red", fg="white", command=volver_4)
+    btn_vol.pack(pady=20, padx= 5)
 
 def precio():
-    global valor_paquete
     if clase == "Aluminio":
-        valor_paquete = valormi[0]
         aluminio = ("""
         1 artículo personal (bolso) (Debe caber debajo del asiento)
         1 equipaje de mano (10 kg)
@@ -757,9 +755,8 @@ def precio():
         Asiento Economy (Aleatoria-clasificado Aluminio)
         Cambios de vuelo (No es permitido)
         Reembolso (No es permitido)""")
-        return valor_paquete, aluminio
+        return aluminio
     elif clase == "Diamante":
-        valor_paquete = valorme[0]
         diamante = ("""
         1 artículo personal (bolso) (Debe caber debajo del asiento)
         1 equipaje de bodega (23 kg) (Debe caber en el compartimiento superior)
@@ -767,9 +764,8 @@ def precio():
         Asiento Economy (Filas específicas disponibles de manera aleatoria)
         Cambios de vuelo (No es permitido)
         Reembolso (No es permitido)""")
-        return valor_paquete, diamante
+        return diamante
     else:
-        valor_paquete = valorma[0]
         premium = ("""
         1 artículo personal (bolso) (Debe caber debajo del asiento)
         1 equipaje de mano (10 kg) (Debe caber en el compartimiento superior)
@@ -777,12 +773,8 @@ def precio():
         Asiento Plus (Sujeto a disponibilidad-clasificado Premium)
         Cambios de vuelo (Sin cargo por cambio, antes del vuelo)
         Reembolso (No es permitido)""")
-        return valor_paquete, premium
+        return premium
     
-def calcular_total_pagar():
-    total_pagar = valor_paquete * int(cant)
-    return total_pagar
-
 def volver_5():
     ventana_tarjeta.destroy()
     ventana_reserva.deiconify()
@@ -820,23 +812,22 @@ def nueva_ventana_tarjeta():
     lbl_fecha_expiracion = tk.Label(tarjeta, text="Fecha de Expiración:", bg="white")
     lbl_fecha_expiracion.pack(pady=5, padx=20, side="top")
 
-    opciones_mes = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+    opciones_mes = ["Mes", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
     entrada_mes = ttk.Combobox(tarjeta, values=opciones_mes)
-    entrada_mes.current("Mes")
+    entrada_mes.current(0)
     entrada_mes.pack(pady=5, padx=5, side="left")
 
-    opciones_anio = ["2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032"]
+    opciones_anio = ["Año", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032"]
     entrada_anio = ttk.Combobox(tarjeta, values=opciones_anio)
-    entrada_mes.current("Año")
+    entrada_anio.current(0)
     entrada_anio.pack(pady=5, padx=5, side="left")
 
     # CVV
+    cvv = tk.Label(tarjeta, text="CVV:", bg="white")
+    cvv.pack(pady=5, padx=20, side="top")
     entrada_cvv = tk.Entry(tarjeta)
-    entrada_cvv.grab_current("CVV")
-    entrada_cvv.pack(pady=5, padx=5, side="right")
+    entrada_cvv.pack(pady=5, padx=20, side="top")
 
-
-   
     def validar_numero_tarjeta():
         numero_tarjeta = entrada_numero_tarjeta.get()
         if len(numero_tarjeta) != 16:
@@ -851,13 +842,14 @@ def nueva_ventana_tarjeta():
             return False
         return True
     
-    def calcular_total_pagar(valor_paquete):
+    def calcular_total_pagar():
+        global valor_paquete
         total_pagar = valor_paquete * int(cant)
         return total_pagar
 
     #----Crear el cuadro para los datos de la tarjeta----
     cuenta = tk.Frame(ventana_tarjeta, bg='white', relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
-    cuenta.pack(pady=20, padx=10, side="right")
+    cuenta.pack(pady=20, padx=10, side="left")
 
     # Mostrar el vuelo seleccionado
     vuelo_label = tk.Label(cuenta, text="Vuelo seleccionado:", bg="white")
@@ -896,12 +888,12 @@ def nueva_ventana_tarjeta():
     pagar_button.bind("<Button-1>", lambda event: validar_numero_tarjeta(), validar_cvv())
     pagar_button.pack(pady=5, padx=10, side="bottom")
     
-    btn_vol = tk.Button(ventana_vuelos, text="Atrás", bg="red", fg="white", command=volver_5)
+    btn_vol = tk.Button(ventana_tarjeta, text="Atrás", bg="red", fg="white", command=volver_5)
     btn_vol.pack(pady=5, padx=10, side="bottom")
 
 def crear_texto_rotado(canvas, texto, x, y, angulo, font=("Helvetica", 12, "bold"), fill="white"):
     # -------- Crear texto rotado ---------
-    canvas.create_text(x, y, text=texto, angle=angulo, fill=fill, font=font,ANCHOR="w")
+    canvas.create_text(x, y, text=texto, angle=angulo, fill=fill, font=font, anchor="w")
 
 def nueva_ventana_ticket():
     ventana_tarjeta.withdraw() 
@@ -936,19 +928,10 @@ def nueva_ventana_ticket():
     contenido = tk.Frame(lienzo9, bg="white")
     contenido.pack(pady=10, padx=10, fill="both", expand=True)
 
-    def nombre_registro():
-        datos_registro = abrir_datos_registro()
-        return datos_registro[-1][0]
-
-    def nombre_completo():
-        nombre = nombre_registro()
-        apellido = apellido
-        return f"{nombre} {apellido}"
 
     # Mostrar los valores de los campos de texto
-    nombre_t = nombre_completo()
     tk.Label(contenido, text="Nombre pasajero:", bg="white", font=("Helvetica", 12)).grid(row=0, column=0, sticky="w", pady=5)
-    tk.Label(contenido, text=nombre_t, bg="white", font=("Helvetica", 12)).grid(row=0, column=1, sticky="w", pady=5)
+    tk.Label(contenido, text=f"{nom} {ape}", bg="white", font=("Helvetica", 12)).grid(row=0, column=1, sticky="w", pady=5)
 
     tk.Label(contenido, text="Origen:", bg="white", font=("Helvetica", 12)).grid(row=1, column=0, sticky="w", pady=5)
     tk.Label(contenido, text=ori, bg="white", font=("Helvetica", 12)).grid(row=1, column=1, sticky="w", pady=5)
