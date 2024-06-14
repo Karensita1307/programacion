@@ -296,6 +296,12 @@ def nueva_ventana_registro():
     apellido = tk.Entry(primer_a)
     apellido.grid(row=0, column=1, padx=1, pady=5)
 
+    def guardar_datos():
+        global nombre1,apellido1
+        # Almacenar los valores de nombre y apellido cuando se presiona el botón "Guardar"
+        nombre1 = nombre.get()
+        apellido1 = apellido.get()
+
     iden_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
     iden_c.grid(row=1, column=0, padx=5, pady=5)
     identi_t = tk.Label(iden_c, text="Identificación", bg="white")
@@ -338,12 +344,6 @@ def nueva_ventana_registro():
     sis_t.grid(row=0, column=0, padx=1, pady=5)
     asis_t = ttk.Combobox(asis_c, values=["Si", "No"])
     asis_t.grid(row=0, column=1, padx=1, pady=5)
-
-    def guardar_datos():
-        global nombre1,apellido1
-        # Almacenar los valores de nombre y apellido cuando se presiona el botón "Guardar"
-        nombre1 = nombre.get()
-        apellido1 = apellido.get()
 
     continuar = tk.Button(recuadro, text="Continuar", bg="red", fg="white", command=lambda: [guardar_datos(), validar()])
     continuar.grid(row=3, column=1, padx=5, pady=5)
@@ -923,7 +923,7 @@ def nueva_ventana_tarjeta():
     viaje.pack(pady=5, padx=20, side="top")
     
     # Botón de pagar
-    pagar_button = tk.Button(ventana_tarjeta, text="Pagar", bg='red3', fg='black', command=nueva_ventana_ticket)
+    pagar_button = tk.Button(ventana_tarjeta, text="Pagar", bg='red3', fg='black', command=crear_ventana_tiquete)
     pagar_button.bind("<Button-1>", lambda event: validar_numero_tarjeta(), validar_cvv())
     pagar_button.pack(pady=5, padx=10, side="bottom")
     
@@ -931,13 +931,12 @@ def nueva_ventana_tarjeta():
     btn_vol.pack(pady=5, padx=10, side="bottom")
 
 
-def nueva_ventana_ticket():
-    
+def crear_ventana_tiquete():
+    nombre = f"{nombre1} {apellido1}"
     ventana_tiquete = tk.Toplevel(window)
     ventana_tiquete.title("Sky-Voyage - Tiquete")
     ventana_tiquete.geometry("1000x600")
     ventana_tiquete.iconbitmap("avion.ico") 
-
     # Create a frame for the airline logo
     logo_frame = tk.Frame(ventana_tiquete, bg="red")
     logo_frame.pack(side="left", fill="y")
@@ -968,7 +967,7 @@ def nueva_ventana_ticket():
 
     # Create the passenger name entry
     passenger_name_entry = tk.Entry(passenger_details_frame, font=("Arial", 12))
-    passenger_name_entry.insert(0, (f"{nombre1} {apellido1}"))
+    passenger_name_entry.insert(0, nombre)
     passenger_name_entry.grid(row=0, column=1, sticky="w")
 
     # Create frames for the flight details
