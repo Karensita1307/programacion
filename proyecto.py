@@ -508,7 +508,7 @@ def volver_2():
     ventana_vuelos.deiconify()
 
 def nueva_ventana_asientos():
-    global ventana_asientos, color, clase
+    global ventana_asientos, color, clase, fila
     ventana_vuelos.withdraw()
     #-------Crear una nueva ventana--------
     ventana_asientos = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
@@ -544,15 +544,12 @@ def nueva_ventana_asientos():
     num_columnas = 6
 
     for fila in range(num_filas):
-        posi = []
         for columna in range(num_columnas):
             clase = "Aluminio" if fila >= 8 else "Diamante" if fila >= 4 else "Premium"
             color = "lightcoral" if clase == "Premium" else "brown" if clase == "Diamante" else "red"
             boton = tk.Button(marco_asientos, text=f"{fila+1}{columnas[columna]}", bg=color, width=3)
             boton.config(command=lambda b=boton: cambiar_estado(b))
             boton.grid(row=fila, column=columna)
-
-
 
     #-----Crear las etiquetas para las clases------
     lbl_premium = tk.Label(marco_clases, text="Premium", bg="lightcoral", width=10)
@@ -563,7 +560,10 @@ def nueva_ventana_asientos():
 
     lbl_aluminio = tk.Label(marco_clases, text="Aluminio", bg="red", width=10)
     lbl_aluminio.pack(pady=40)
-        
+
+    guardar_asientos = tk.Checkbutton(ventana_asientos, text="Guardar datos", command=guardar_clase)
+    guardar_asientos.pack(pady=10, padx=30, side="bottom")      
+
     #-------Botón de selección-------
     btn_seleccionar = tk.Button(ventana_asientos, text="Seleccionar", bg="red", fg="white", command=mostrar_vuelos)
     btn_seleccionar.pack(pady=10, padx=10, side="right")
@@ -572,8 +572,14 @@ def nueva_ventana_asientos():
     btn_volver = tk.Button(ventana_asientos, text="Atrás", bg="red", fg="white", command=volver_2)
     btn_volver.pack(pady=10, padx=0, side="right")
 
-    guardar_asientos = tk.Checkbutton(ventana_asientos, text="Guardar datos")
-    guardar_asientos.pack(pady=10, padx=30, side="bottom")
+def guardar_clase():
+    if clase == "Aluminio" if fila >= 8 else "Diamante":
+        aluminio = "Aluminio"
+        return aluminio
+    elif clase == "Diamante" if fila >= 4 else "premium":
+        diamante = "Diamante"
+    else:
+        premium = "premium"
 
 precio_menor = []
 precio_regular = []
@@ -746,8 +752,9 @@ def nueva_ventana_reserva():
     btn_vol = tk.Button(ventana_reserva, text="Atrás", bg="red", fg="white", command=volver_4)
     btn_vol.pack(pady=20, padx= 5)
 
-def precio():
+def precio(): 
     if clase == "Aluminio":
+        actualizar_precio_aluminio()
         aluminio = ("""
         1 artículo personal (bolso) (Debe caber debajo del asiento)
         1 equipaje de mano (10 kg)
@@ -757,6 +764,7 @@ def precio():
         Reembolso (No es permitido)""")
         return aluminio
     elif clase == "Diamante":
+        actualizar_precio_diamante()
         diamante = ("""
         1 artículo personal (bolso) (Debe caber debajo del asiento)
         1 equipaje de bodega (23 kg) (Debe caber en el compartimiento superior)
@@ -766,6 +774,7 @@ def precio():
         Reembolso (No es permitido)""")
         return diamante
     else:
+        actualizar_precio_premium()
         premium = ("""
         1 artículo personal (bolso) (Debe caber debajo del asiento)
         1 equipaje de mano (10 kg) (Debe caber en el compartimiento superior)
@@ -775,6 +784,25 @@ def precio():
         Reembolso (No es permitido)""")
         return premium
     
+def actualizar_precio_aluminio():
+    global valor_paquete
+    valor_paquete = valormi[0]
+    return valor_paquete
+
+# Funcio Actualizar El Precio Para El Paquete De Vuelo Diamante
+
+def actualizar_precio_diamante():
+    global valor_paquete
+    valor_paquete = valorme[0]
+    return valor_paquete
+
+# Funcion Actualizar El Precio Para El Paquete De Vuelo Premium
+
+def actualizar_precio_premium():
+    global valor_paquete
+    valor_paquete = valorma[0]
+    return valor_paquete    
+
 def volver_5():
     ventana_tarjeta.destroy()
     ventana_reserva.deiconify()
@@ -791,7 +819,7 @@ def nueva_ventana_tarjeta():
 
     #----Crear el cuadro para los datos de la tarjeta----
     tarjeta = tk.Frame(ventana_tarjeta, bg='white', relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
-    tarjeta.pack(pady=20, padx=10, side="left")
+    tarjeta.pack(pady=20, padx=20, side="left")
     
     datos = tk.Label(tarjeta, text="Datos de la tarjeta" ,bg='white', relief=tk.FLAT)
     datos.pack(pady=5, padx=20, side="top")
@@ -849,7 +877,7 @@ def nueva_ventana_tarjeta():
 
     #----Crear el cuadro para los datos de la tarjeta----
     cuenta = tk.Frame(ventana_tarjeta, bg='white', relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
-    cuenta.pack(pady=20, padx=10, side="left")
+    cuenta.pack(pady=20, padx=20, side="right")
 
     # Mostrar el vuelo seleccionado
     vuelo_label = tk.Label(cuenta, text="Vuelo seleccionado:", bg="white")
@@ -879,7 +907,7 @@ def nueva_ventana_tarjeta():
     total_label = tk.Label(cuenta, text="Total a pagar:", bg='white')
     total_label.pack(pady=5, padx=20, side="top")
 
-    texto = calcular_total_pagar(valor_paquete)
+    texto = calcular_total_pagar()
     viaje = tk.Label(cuenta, text=texto , relief="flat", bg="white", fg="black")
     viaje.pack(pady=5, padx=20, side="top")
     
@@ -890,10 +918,6 @@ def nueva_ventana_tarjeta():
     
     btn_vol = tk.Button(ventana_tarjeta, text="Atrás", bg="red", fg="white", command=volver_5)
     btn_vol.pack(pady=5, padx=10, side="bottom")
-
-def crear_texto_rotado(canvas, texto, x, y, angulo, font=("Helvetica", 12, "bold"), fill="white"):
-    # -------- Crear texto rotado ---------
-    canvas.create_text(x, y, text=texto, angle=angulo, fill=fill, font=font, anchor="w")
 
 def nueva_ventana_ticket():
     ventana_tarjeta.withdraw() 
@@ -912,14 +936,11 @@ def nueva_ventana_ticket():
     barra_lateral = tk.Frame(lienzo9, bg="red", width=80)
     barra_lateral.pack(side = "left", fill="y")
     
-    # ---------- canvas en el lateral ----------
-    canvas_lateral = tk.Canvas(barra_lateral, bg="red", width=80, height=280)
-    canvas_lateral.pack()
-    
-    # ----------------- posicion del texto lateral ---------------------
-    crear_texto_rotado(canvas_lateral, "Sky-Voyage", 40, 175, 90, font=("Helvetica", 12, "bold"), fill="white")
+    encabezado = tk.Frame(lienzo9, bg="black", height=40)
+    encabezado.pack(fill="x")
+    tk.Label(encabezado, text="Sky-Voyage", bg="red", fg="white", font=("Helvetica", 12)).pack(pady=5)
 
-    # -------- barra superiro ------------
+    # -------- barra superior ------------
     encabezado = tk.Frame(lienzo9, bg="black", height=40)
     encabezado.pack(fill="x")
     tk.Label(encabezado, text="Pase de abordaje", bg="black", fg="white", font=("Helvetica", 12)).pack(pady=5)
@@ -927,7 +948,6 @@ def nueva_ventana_ticket():
     # ------------ Contenido principal ------------------
     contenido = tk.Frame(lienzo9, bg="white")
     contenido.pack(pady=10, padx=10, fill="both", expand=True)
-
 
     # Mostrar los valores de los campos de texto
     tk.Label(contenido, text="Nombre pasajero:", bg="white", font=("Helvetica", 12)).grid(row=0, column=0, sticky="w", pady=5)
