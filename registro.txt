@@ -1,0 +1,2 @@
+karen,lopez,Femenino,colombia,1117016953,13/07/2006,No,karen@gmail.com,3235253751
+claudio,benito,Masculino,peru,1117016953,12/04/2007,No,claudio@gmail.com,3235253751

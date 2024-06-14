@@ -62,144 +62,23 @@ def datos_ingresados():
         nueva_ventana_registro()
 
 def abrir_datos_registro():
-    with open("registro.txt", "r") as file:
+    with open("registro.txt", "a") as file:
         datos_registro = [line.strip().split(",") for line in file]
     return datos_registro
+
+vuelo2 = []
+fecha = []
+hora_salida = []
+hora_llegada = []
+valormin = []
+valormmedio = []
+valormmax = []
+ciudad_origen = []
+ciudad_destino = []
 
 #-------------Botón check-in-------------
 checkin_b = tk.Button(lienzo, text="Realizar Check-in", bg="red", fg="white", command=datos_ingresados)
 checkin_b.grid(row=3, columnspan=3, pady=10)
-
-def guardar_datos_registro():
-    global ape
-    nom = nombre.get()
-    ape = apellido.get()
-    gen = genero.get()
-    nac = nacionalidad.get()
-    ide = identi.get()
-    fec = fecha.get()
-    asi = asis_t.get()
-    cor = correo.get()
-    tel = telefono.get()
-    generar_codigo_checkin()
-
-    if len(nom and ape and gen and nac and ide and fec and asi and cor and tel) != 0:
-        with open("registro.txt", "a") as file:
-            file.write(f"{nom},{ape},{gen},{nac},{ide},{fec},{asi},{cor},{tel}\n")
-        nueva_ventana_vuelos()    
-    else:
-        messagebox.showwarning(title="Error", message="Llene todos los campos")
-
-def generar_codigo_checkin():
-    apellido = ape
-    codigo = apellido[0] + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-    with open("datos_checkin.txt", "a") as file:
-        file.write(f"{apellido},{codigo}\n")
-    messagebox.showinfo(title="Código", message=f"Tu código es {codigo}")
-    return codigo
-
-def validar():
-    tele = telefono.get()
-    corre = correo.get()
-    contador = 0
-    if tele.isdigit() and len(tele) == 10:
-        guardar_datos_registro()
-        for i in corre:
-            if i == "@":
-                contador += 1
-                if contador == 1 and (i == "."):
-                    contador += 1
-        if contador == 2:
-            guardar_datos_registro()
-        else:     
-                messagebox.showwarning(title="Correo", message="Correo no válido")
-    else:
-        messagebox.showwarning(title="Número", message="Número no válido")
-    corre = correo.get()
-
-def nueva_ventana_registro():
-    global telefono, correo, nombre, apellido, identi, nacionalidad, fecha, asis_t, genero
-    ventana_registro = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
-    ventana_registro.title("Sky-Voyage")
-    ventana_registro.geometry("800x400")
-    ventana_registro.config(bg = "white")
-    ventana_registro.iconbitmap("avion.ico")
-    ventana_registro.resizable(0, 0)
-
-    lienzo_5 = tk.Frame(ventana_registro, bg="white")
-    lienzo_5.pack(pady=40, fill="x")
-
-    cua_regist = tk.Frame(lienzo_5, bg="white")
-    cua_regist.pack(fill="x", padx=40, pady=0)
-    registro_t = tk.Label(cua_regist, text="Realizar un vuelo", bg="white", relief="flat")
-    registro_t.pack(side="left", padx=40, pady=0)
-
-    recuadro = tk.Frame(lienzo_5, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    recuadro.pack(fill="x", pady=10, padx=10)
-
-    genero_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    genero_c.grid(row=0, column=0, padx=1, pady=5)
-    genero_t = tk.Label(genero_c, text="Género", bg="white")
-    genero_t.grid(row=0, column=0, padx=1, pady=5)
-    genero = ttk.Combobox(genero_c, values=["Masculino", "Femenino","Otro"])
-    genero.grid(row=0, column=1, padx=1, pady=5)
-
-    primer_n= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    primer_n.grid(row=0, column=1, padx=1, pady=5)
-    nombre_t = tk.Label(primer_n, text="Primer Nombre", bg="white")
-    nombre_t.grid(row=0, column=0, padx=1, pady=5)
-    nombre = tk.Entry(primer_n)
-    nombre.grid(row=0, column=1, padx=1, pady=5)
-
-    primer_a = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    primer_a.grid(row=0, column=2, padx=1, pady=5)
-    apellido_t = tk.Label(primer_a, text="Primer Apellido", bg="white")
-    apellido_t.grid(row=0, column=0, padx=1, pady=5)
-    apellido = tk.Entry(primer_a)
-    apellido.grid(row=0, column=1, padx=1, pady=5)
-
-    iden_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    iden_c.grid(row=1, column=0, padx=5, pady=5)
-    identi_t = tk.Label(iden_c, text="Identificación", bg="white")
-    identi_t.grid(row=0, column=0, padx=1, pady=5)
-    identi = tk.Entry(iden_c)
-    identi.grid(row=0, column=1, padx=1, pady=5)
-
-    naci_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    naci_c.grid(row=1, column=1, padx=1, pady=5)
-    naci_t = tk.Label(naci_c, text="Nacionalidad", bg="white")
-    naci_t.grid(row=0, column=0,columnspan=1, padx=5, pady=5)
-    nacionalidad = tk.Entry(naci_c)
-    nacionalidad.grid(row=0, column=1, padx=1, pady=5)
-    
-    fecha_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    fecha_c.grid(row=1, column=2, padx=1, pady=5)
-    fecha_t = tk.Label(fecha_c, text="Fecha Nacimiento", bg="white", width=20)
-    fecha_t.grid(row=0, column=0, padx=1, pady=5)
-    fecha = tk.Entry(fecha_c)
-    fecha.grid(row=0, column=1, padx=1, pady=5)
-
-    tele_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    tele_c.grid(row=2, column=0, padx=1, pady=5)
-    tele_t = tk.Label(tele_c, text="Teléfono", bg="white")
-    tele_t.grid(row=0, column=0, padx=1, pady=5)
-    telefono = tk.Entry(tele_c)
-    telefono.grid(row=0, column=1, padx=1, pady=5)
-
-    correo_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    correo_c.grid(row=2, column=1, padx=1, pady=5)
-    correo_t = tk.Label(correo_c, text="Correo electrónico", bg="white", width=20)
-    correo_t.grid(row=0, column=0, padx=1, pady=5)
-    correo = tk.Entry(correo_c)
-    correo.grid(row=0, column=1, padx=1, pady=5)
-
-    asis_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
-    asis_c.grid(row=2, column=2, padx=1, pady=5)
-    asis_t = ttk.Combobox(asis_c, values=["Si", "No"])
-    asis_t.grid(row=0, column=0, padx=1, pady=5)
-
-    continuar = tk.Button(recuadro, text="Continuar", bg="red", fg="white", command=validar)
-    continuar.grid(row=3, column=1, padx=5, pady=5)
 
 matriz = [
 ['Z328', '2024-06-5', '08:13:00', '10:35:00', 244463, 538669, 1666594, 'Santa Marta', 'Bogota'],
@@ -304,12 +183,168 @@ matriz = [
 ['V560', '2024-06-26', '08:41:00', '11:20:00', 118816, 675485, 2104917, 'Santa Marta', 'Cali'],
 ]
 
+for i in range(len(matriz)):
+    if matriz[i][0]:
+        vuelo2.append(matriz[i][0])
+    if matriz[i][1]:
+        fecha.append(matriz[i][1])
+    if matriz[i][2]:
+        hora_salida.append(matriz[i][2])
+    if matriz[i][3]:
+        hora_llegada.append(matriz[i][3])
+    if matriz[i][4]:
+        valormin.append(matriz[i][4])
+    if matriz[i][5]:
+        valormmedio.append(matriz[i][5])
+    if matriz[i][6]:
+        valormmax.append(matriz[i][6])
+    if matriz[i][7]:
+        ciudad_origen.append(matriz[i][7])
+    if matriz[i][8]:
+        ciudad_destino.append(matriz[i][8])
+
+def guardar_datos_registro():
+    global ape
+    nom = nombre.get()
+    ape = apellido.get()
+    gen = genero.get()
+    nac = nacionalidad.get()
+    ide = identi.get()
+    fec = fecha.get()
+    asi = asis_t.get()
+    cor = correo.get()
+    tel = telefono.get()
+    generar_codigo_checkin()
+
+    if len(nom and ape and gen and nac and ide and fec and asi and cor and tel) != 0:
+        with open("registro.txt", "a") as file:
+            file.write(f"{nom},{ape},{gen},{nac},{ide},{fec},{asi},{cor},{tel}\n")
+        nueva_ventana_vuelos()    
+    else:
+        messagebox.showwarning(title="Error", message="Llene todos los campos")
+
+def generar_codigo_checkin():
+    apellido = ape
+    codigo = apellido[0] + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+    with open("datos_usuario.txt", "a") as file:
+        file.write(f"{codigo},{apellido}\n")
+    messagebox.showinfo(title="Código", message=f"Tu código es {codigo}")
+    return codigo
+
+def validar():
+    tele = telefono.get()
+    corre = correo.get()
+    contador = 0
+
+    for i in corre:
+        if i == "@":
+            contador += 1
+            if contador == 1 and (i == "."):
+                contador += 1
+
+    if tele.isdigit() and len(tele) == 10:
+        guardar_datos_registro()
+        if contador == 2:
+            guardar_datos_registro()
+        else:     
+            messagebox.showwarning(title="Correo", message="Correo no válido")
+    else:
+        messagebox.showwarning(title="Número", message="Número no válido")
+    corre = correo.get()
+
+def nueva_ventana_registro():
+    global ventana_registro, telefono, correo, nombre, apellido, identi, nacionalidad, fecha, asis_t, genero
+    window.withdraw()
+
+    ventana_registro = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
+    ventana_registro.title("Sky-Voyage")
+    ventana_registro.geometry("800x400")
+    ventana_registro.config(bg = "white")
+    ventana_registro.iconbitmap("avion.ico")
+    ventana_registro.resizable(0, 0)
+
+    lienzo_5 = tk.Frame(ventana_registro, bg="white")
+    lienzo_5.pack(pady=40, fill="x")
+
+    cua_regist = tk.Frame(lienzo_5, bg="white")
+    cua_regist.pack(fill="x", padx=40, pady=0)
+    registro_t = tk.Label(cua_regist, text="Realizar un vuelo", bg="white", relief="flat")
+    registro_t.pack(side="left", padx=40, pady=0)
+
+    recuadro = tk.Frame(lienzo_5, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    recuadro.pack(fill="x", pady=10, padx=10)
+
+    genero_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    genero_c.grid(row=0, column=0, padx=1, pady=5)
+    genero_t = tk.Label(genero_c, text="Género", bg="white")
+    genero_t.grid(row=0, column=0, padx=1, pady=5)
+    genero = ttk.Combobox(genero_c, values=["Masculino", "Femenino","Otro"])
+    genero.grid(row=0, column=1, padx=1, pady=5)
+
+    primer_n= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    primer_n.grid(row=0, column=1, padx=1, pady=5)
+    nombre_t = tk.Label(primer_n, text="Primer Nombre", bg="white")
+    nombre_t.grid(row=0, column=0, padx=1, pady=5)
+    nombre = tk.Entry(primer_n)
+    nombre.grid(row=0, column=1, padx=1, pady=5)
+
+    primer_a = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    primer_a.grid(row=0, column=2, padx=1, pady=5)
+    apellido_t = tk.Label(primer_a, text="Primer Apellido", bg="white")
+    apellido_t.grid(row=0, column=0, padx=1, pady=5)
+    apellido = tk.Entry(primer_a)
+    apellido.grid(row=0, column=1, padx=1, pady=5)
+
+    iden_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    iden_c.grid(row=1, column=0, padx=5, pady=5)
+    identi_t = tk.Label(iden_c, text="Identificación", bg="white")
+    identi_t.grid(row=0, column=0, padx=1, pady=5)
+    identi = tk.Entry(iden_c)
+    identi.grid(row=0, column=1, padx=1, pady=5)
+
+    naci_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    naci_c.grid(row=1, column=1, padx=1, pady=5)
+    naci_t = tk.Label(naci_c, text="Nacionalidad", bg="white")
+    naci_t.grid(row=0, column=0,columnspan=1, padx=5, pady=5)
+    nacionalidad = tk.Entry(naci_c)
+    nacionalidad.grid(row=0, column=1, padx=1, pady=5)
+    
+    fecha_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    fecha_c.grid(row=1, column=2, padx=1, pady=5)
+    fecha_t = tk.Label(fecha_c, text="Fecha Nacimiento", bg="white", width=20)
+    fecha_t.grid(row=0, column=0, padx=1, pady=5)
+    fecha = tk.Entry(fecha_c)
+    fecha.grid(row=0, column=1, padx=1, pady=5)
+
+    tele_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    tele_c.grid(row=2, column=0, padx=1, pady=5)
+    tele_t = tk.Label(tele_c, text="Teléfono", bg="white")
+    tele_t.grid(row=0, column=0, padx=1, pady=5)
+    telefono = tk.Entry(tele_c)
+    telefono.grid(row=0, column=1, padx=1, pady=5)
+
+    correo_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    correo_c.grid(row=2, column=1, padx=1, pady=5)
+    correo_t = tk.Label(correo_c, text="Correo electrónico", bg="white", width=20)
+    correo_t.grid(row=0, column=0, padx=1, pady=5)
+    correo = tk.Entry(correo_c)
+    correo.grid(row=0, column=1, padx=1, pady=5)
+
+    asis_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
+    asis_c.grid(row=2, column=2, padx=1, pady=5)
+    asis_t = ttk.Combobox(asis_c, values=["Si", "No"])
+    asis_t.grid(row=0, column=0, padx=1, pady=5)
+
+    continuar = tk.Button(recuadro, text="Continuar", bg="red", fg="white", command=validar)
+    continuar.grid(row=3, column=1, padx=5, pady=5)
+
+
 def volver_1():
     ventana_vuelos.destroy()
     window.deiconify()
 
 def nueva_ventana_vuelos():
-    global ventana_vuelos, personas_cant, origen_txt, destino_txt, fecha_txt
+    global ventana_vuelos, personas_cant, num, fecha_txt, origen_g, destino_g, fecha_g, personas_g
     window.withdraw()
 
     #---Crear una nueva ventana---
@@ -339,6 +374,7 @@ def nueva_ventana_vuelos():
     personas_g = tk.StringVar()
     personas_cant = ttk.Combobox(barra_2, values=[str(i) for i in range(1,11)], width=3, textvariable=personas_g)
     personas_cant.pack(side="right", padx=5, pady=5)
+    num = personas_g.get()
 
     #------marco de busqueda--------
     barra_3 = tk.Frame(lienzo_2, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
@@ -433,8 +469,8 @@ def nueva_ventana_vuelos():
     btn_volver.grid(row=1, column=4, padx=5, pady=2)
 
 def actualizar_fechas_disponibles():
-    origen_seleccionado = origen_txt.get()
-    destino_seleccionado = destino_txt.get()
+    origen_seleccionado = origen_g.get()
+    destino_seleccionado = destino_g.get()
 
     fechas_disponibles = set()
     for vuelo in matriz:
@@ -446,10 +482,10 @@ def actualizar_fechas_disponibles():
 
 def guardar_selecciones():
     global ori, des, cant, fech
-    des = destino_txt.get()    
-    ori = origen_txt.get()
+    des = destino_g.get()    
+    ori = origen_g.get()
     cant = int(personas_cant.get())
-    fech = fecha_txt.get()
+    fech = fecha_g.get()
 
 asientos_seleccionados = 0
 
@@ -472,7 +508,7 @@ def volver_2():
     ventana_vuelos.deiconify()
 
 def nueva_ventana_asientos():
-    global ventana_asientos, color
+    global ventana_asientos, color, clase
     ventana_vuelos.withdraw()
     #-------Crear una nueva ventana--------
     ventana_asientos = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
@@ -508,12 +544,15 @@ def nueva_ventana_asientos():
     num_columnas = 6
 
     for fila in range(num_filas):
+        posi = []
         for columna in range(num_columnas):
             clase = "Aluminio" if fila >= 8 else "Diamante" if fila >= 4 else "Premium"
             color = "lightcoral" if clase == "Premium" else "brown" if clase == "Diamante" else "red"
             boton = tk.Button(marco_asientos, text=f"{fila+1}{columnas[columna]}", bg=color, width=3)
             boton.config(command=lambda b=boton: cambiar_estado(b))
             boton.grid(row=fila, column=columna)
+
+
 
     #-----Crear las etiquetas para las clases------
     lbl_premium = tk.Label(marco_clases, text="Premium", bg="lightcoral", width=10)
@@ -526,11 +565,11 @@ def nueva_ventana_asientos():
     lbl_aluminio.pack(pady=40)
         
     #-------Botón de selección-------
-    btn_seleccionar = tk.Button(ventana_asientos, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_ofertas)
+    btn_seleccionar = tk.Button(ventana_asientos, text="Seleccionar", bg="red", fg="white", command=mostrar_vuelos)
     btn_seleccionar.pack(pady=10, padx=10, side="right")
 
     #----------Botón volver----------
-    btn_volver = tk.Button(ventana_asientos, text="Atrás", bg="red", fg="white", command=volver_1)
+    btn_volver = tk.Button(ventana_asientos, text="Atrás", bg="red", fg="white", command=volver_2)
     btn_volver.pack(pady=10, padx=0, side="right")
 
     guardar_asientos = tk.Checkbutton(ventana_asientos, text="Guardar datos")
@@ -539,178 +578,125 @@ def nueva_ventana_asientos():
 precio_menor = []
 precio_regular = []
 precio_mayor = []
-
-def precios():
-    global precio_menor, precio_mayor, precio_regular
-
-    for vuelo in matriz: 
-        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
-            precio_menor.append(vuelo[4])
-
-    for vuelo in matriz:
-        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
-            precio_regular.append(vuelo[5])
-
-    for vuelo in matriz:
-        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des:
-            precio_mayor.append(vuelo[6])
-
 menor = []
 regular = []
 mayor = []
 
-def horas():
-    global menor, mayor, regular
-
-    for vuelo in matriz:
-        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_menor:
-            ida = vuelo[2]
-            vuelta = vuelo[3]
-            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
-            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
-            menor.append(hora_ida)
-            menor.append(hora_vuelta)
-
-
-    for vuelo in matriz:
-        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_regular:
-            ida = vuelo[2]
-            vuelta = vuelo[3]
-            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
-            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
-            regular.append(hora_ida)
-            regular.append(hora_vuelta)           
-
-    for vuelo in matriz:
-        if vuelo[1] == fech and vuelo[7] == ori and vuelo[8] == des and vuelo[4] == precio_mayor:
-            ida = vuelo[2]
-            vuelta = vuelo[3]
-            hora_ida = datetime.strptime(ida, "%H:%M:%S").strftime("%H:%M")
-            hora_vuelta = datetime.strptime(vuelta, "%H:%M:%S").strftime("%H:%M")
-            mayor.append(hora_ida)
-            mayor.append(hora_vuelta)      
-
-def calcular_tiempo_transcurrido(hora_inicio, hora_fin):
-    # Convertir las horas de cadena a objetos datetime
-    hora_inicio_obj = datetime.strptime(hora_inicio, "%H:%M")
-    hora_fin_obj = datetime.strptime(hora_fin, "%H:%M")
-    
-    # Calcular la diferencia de tiempo
-    tiempo_transcurrido = hora_fin_obj - hora_inicio_obj
-    
-    # Calcular el tiempo transcurrido en horas y minutos
-    horas = tiempo_transcurrido.seconds // 3600
-    minutos = (tiempo_transcurrido.seconds % 3600) // 60
-    
-    return horas, minutos
+def precios():
+    global hora_l, hora_s, valormi, valorme, valorma, codigo, origen_seleccionado, destino_seleccionado
+    origen_seleccionado = origen_g.get()
+    destino_seleccionado = destino_g.get()
+    hora_s = []
+    hora_l = []
+    valormi = []
+    valorme = []
+    valorma = []
+    codigo = []
+    for i in range(len(matriz)): 
+        if ciudad_origen[i] == origen_seleccionado and ciudad_destino[i] == destino_seleccionado  and fecha[i] == fecha_g.get():
+            valormi.append(valormin[i])
+            valorme.append(valormmedio[i])
+            valorma.append(valormmax[i])
+            codigo.append(vuelo2[i])
+            hora_s.append(hora_salida[i])
+            hora_l.append(hora_llegada[i])
 
 def volver_3():
-    ventana_ofertas.destroy()
+    ventana_vuelos.destroy()
     ventana_asientos.deiconify()
 
-def nueva_ventana_ofertas():
-    global ventana_ofertas
-    ventana_asientos.withdraw()
+def mostrar_vuelos():
+    global ventana_vuelos
+    ventana_asientos.withdraw() 
 
-    ventana_ofertas = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
-    ventana_ofertas.title("Sky-Voyage")
-    ventana_ofertas.geometry("800x500")
-    ventana_ofertas.config(bg = "white")
-    ventana_ofertas.resizable(0, 0)
-    ventana_ofertas.iconbitmap("avion.ico")
+    # Crear la nueva ventana
+    ventana_vuelos = tk.Toplevel(window)
+    ventana_vuelos.title("Sky-Voyage")
+    ventana_vuelos.geometry("1000x500")
+    ventana_vuelos.config(bg="white")
+    ventana_vuelos.resizable(0, 0)
+    ventana_vuelos.iconbitmap("avion.ico")
 
     # ------- Se crea un lienzo---------
-    lienzo_4 = tk.Frame(ventana_ofertas, bg = "white")
+    lienzo_4 = tk.Frame(ventana_vuelos, bg="white")
     lienzo_4.pack(pady=40, fill="x")
 
     # ------ Barra de ida -------
-    barra_7 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_7 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
     barra_7.pack(pady=0, padx=20, fill="x")
 
     #------ boton de Ida---------
-    ida_ofertas = tk.Label(barra_7, text= "   Ida:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    ida_ofertas = tk.Label(barra_7, text= "   Ida:", relief="flat", bg="white", fg="black")
     ida_ofertas.pack(side="left", padx=5, pady=5)
 
     text = (f"{ori} a {des}")
-    viaje = tk.Label(barra_7, text=text , relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
+    viaje = tk.Label(barra_7, text=text , relief="flat", bg="white", fg="black")
     viaje.pack(side="left", padx=0, pady=8)
 
     #----Barra de ordenar por------
-    barra_8 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_8 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
     barra_8.pack(pady=0, padx=20, fill="x")
 
-    # ----Botones de ordenar----------
-    ordenar = tk.Label(barra_8, text= "ordenado por:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
-    ordenar.pack(side="left", padx=3, pady=3)
-    
-    mejor_precio = tk.Button(barra_8, text= "Mejor Precio ", relief="solid", bg="white")
-    mejor_precio.pack(side="left", padx=3, pady=5)
-
     #-------Barra para vuelos-------
-    barra_9 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_9 = tk.Frame(lienzo_4, bg="white", relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
     barra_9.pack(pady=5, padx=20, fill="x")
 
-    #------primer posible-------------
-    vuelo_1 = tk.Frame(barra_9, relief=tk.RAISED, bg="white")
-    vuelo_1.pack(pady=5, padx=10, fill="x")
+    #------marco para los vuelos----
+    marco_vuelos = tk.Frame(ventana_vuelos)
+    marco_vuelos.pack(pady=20)
 
-    texx = menor[0]
-    hora_ida = tk.Label(vuelo_1, text=texx, bg="white")
-    hora_ida.grid(row=0, column=0, padx=5, pady=1)
+    vuelos = precios()
+    
+    for i in range(len(hora_s)):
+        vuelo_frame = tk.Frame(marco_vuelos, relief=tk.RAISED, bg="white")
+        vuelo_frame.pack(fill="x", pady=5)
 
-    origen = ori[:3].upper() # .upper para pasarlo a mayusculas
-    ciudad_1 = tk.Label(vuelo_1, text=origen, bg="white")
-    ciudad_1.grid(row=1, column=0, padx=5, pady=1)
+        # Convertir las horas a objetos datetime
+        hora_salida = datetime.strptime(hora_s[i], "%H:%M:%S")
+        hora_llegada = datetime.strptime(hora_l[i], "%H:%M:%S")
 
-    lineas = tk.Label(vuelo_1, text="-------------------", bg="white")
-    lineas.grid(row=0, column=1, padx=5, pady=1)
+        # Calcular la duración del vuelo
+        duracion = hora_llegada - hora_salida
+        minutos = duracion.seconds // 60  # Convertir la duración a minutos
 
-    horas, minutos = calcular_tiempo_transcurrido(menor[0], menor[1])
-    texto = (f"{horas}h {minutos}m")
-    tiempo = tk.Label(vuelo_1, text=texto, bg="white")
-    tiempo.grid(row=1, column=1, padx=5, pady=1)
+        # Convertir los minutos a horas y minutos
+        horas = minutos // 60
+        minutos = minutos % 60
 
-    texxt = menor[1]
-    hora_ida = tk.Label(vuelo_1, text=texxt, bg="white")
-    hora_ida.grid(row=0, column=2, padx=5, pady=1)
+        destino = des[:3].upper() # .upper para pasarlo a mayusculas
+        origen = ori[:3].upper() # .upper para pasarlo a mayusculas
 
-    origen = des[:3].upper() # .upper para pasarlo a mayusculas
-    ciudad_1 = tk.Label(vuelo_1, text=origen, bg="white")
-    ciudad_1.grid(row=1, column=2, padx=5, pady=1)
+        # detalles del vuelo
+        if horas > 0:
+            vuelo_title = tk.Label(vuelo_frame, text=f"""
+    {hora_s[i]}________________ {hora_l[i]} 
+    {origen}      {horas}h {minutos}m      {destino}
+            """, bg="red", fg="white")
+        else:
+            vuelo_title = tk.Label(vuelo_frame, text=f"""
+    {hora_s[i]}________________ {hora_l[i]} 
+    {origen}        {minutos}m         {destino}
+            """, bg="red", fg="white")
+        vuelo_title.pack(side="left", padx=10)
 
-    precio = tk.Frame(vuelo_1, bg="gray", relief=tk.FLAT)
-    precio.grid(row=0, column=3, padx=5, pady=1)
+        # Precio del vuelo
+        vuelo_price = tk.Label(vuelo_frame, text=f"Desde COP {valormi[i]} hasta COP {valorma[i]}", font=("Arial", 12), bg="white", fg="black")
+        vuelo_price.pack(fill="x", pady=10)
 
-    desde = tk.Label(precio, text="Desde", bg="gray", relief=tk.FLAT)
-    desde.grid(row=0, column=0, padx=5, pady=1)
+        # Botón de selección
+        btn_seleccionar = tk.Button(vuelo_frame, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_reserva)
+        btn_seleccionar.pack(side="right", padx=10)
 
-    precio_m = precio_menor[0]
-    valor = tk.Label(precio, text=precio_m, bg="gray", relief=tk.FLAT)
-    valor.grid(row=1, column=1, padx=5, pady=1)
-
-    #------Segundo posible------------
-    vuelo_2 = tk.Button(barra_9, relief=tk.RAISED)
-    vuelo_2.pack(pady=5, padx=10, fill="x")
-
-    #------Tercer posible-------------
-    vuelo_3 = tk.Button(barra_9, relief=tk.RAISED)
-    vuelo_3.pack(pady=5, padx=10, fill="x")
-
-    #-------Botón de selección-------
-    btn_pasar = tk.Button(ventana_ofertas, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_reserva)
-    btn_pasar.pack(pady=10, padx=10, side="right")
-
-    #-------Botón de volver-------
-    btn_volver = tk.Button(ventana_ofertas, text="Atrás", bg="red", fg="white", command=volver_3)
-    btn_volver.pack(pady=10, padx=0, side="right")
+    btn_vol = tk.Button(ventana_vuelos, text="Atrás", bg="red", fg="white", command=volver_3)
+    btn_vol.pack(pady=10, padx=30, side="bottom")
 
 def volver_4():
     ventana_reserva.destroy()
-    ventana_ofertas.deiconify()
+    ventana_vuelos.deiconify()
 
 def nueva_ventana_reserva():
-    global ventana_reserva
-    ventana_ofertas.withdraw()
+    global ventana_reserva, paquete_text
+    ventana_vuelos.withdraw() 
 
     ventana_reserva = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_reserva.title("Sky-Voyage")
@@ -727,19 +713,75 @@ def nueva_ventana_reserva():
     barra_10 = tk.Frame(lienzo_5, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
     barra_10.pack(pady=0, padx=20, fill="x")
 
-    #------ boton de Ida---------
-    ida_reserva = tk.Label(barra_10, text= "   Ida:", relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
-    ida_reserva.pack(side="left", padx=5, pady=5)
+    viaje = tk.Label(barra_10, text="Detalles de compra:" , relief="flat", bg="white", fg="black")
+    viaje.pack(side="left", padx=0, pady=8)
+
+    barra_11 = tk.Frame(lienzo_5, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    barra_11.pack(pady=0, padx=20, fill="x")
+
+    # Mostrar el vuelo seleccionado
+    vuelo_label = tk.Label(barra_11, text="Vuelo seleccionado:", bg="white")
+    vuelo_label.pack(side="top", padx=0, pady=2)
 
     text = (f"{ori} a {des}")
-    viaje_ida = tk.Label(barra_10, text=text , relief="flat", bg="white", fg="black",highlightbackground="white", highlightthickness=1)
-    viaje_ida.pack(side="left", padx=0, pady=8)
+    viaje = tk.Label(barra_11, text=text , relief="flat", bg="white", fg="black")
+    viaje.pack(side="top", padx=0, pady=4)
 
-    btn_pas = tk.Button(ventana_reserva, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_registro)
-    btn_pas.pack(pady=10, padx=30, side="right")
+    # Mostrar el paquete seleccionado
+    paquete_label = tk.Label(barra_11, text="Paquete seleccionado:", bg="white")
+    paquete_label.pack(side="top", padx=0, pady=4)
 
-    btn_vol = tk.Button(ventana_reserva, text="Atrás", bg="red", fg="white", command=volver_4)
-    btn_vol.pack(pady=10, padx=30, side="right")
+    texto = clase
+    paquete_text = tk.Label(barra_11, text=texto, height=5, width=50, bg="white")
+    paquete_text.pack(side="top", padx=0, pady=2)
+
+    especifica = precio()
+    espe = tk.Label(barra_11, text=especifica, height=5, width=50, bg="white")
+    espe.pack(side="top", padx=0, pady=2)
+    
+    # Botón para continuar con el pago
+    btn_continuar_pago = tk.Button(ventana_reserva, text="Continuar con el Pago", bg="red3", fg="white", command=nueva_ventana_tarjeta)
+    btn_continuar_pago.pack(pady=20)
+
+    btn_vol = tk.Button(ventana_vuelos, text="Atrás", bg="red", fg="white", command=volver_4)
+    btn_vol.pack(pady=10, padx=30, side="bottom")
+
+def precio():
+    global valor_paquete
+    if clase == "Aluminio":
+        valor_paquete = valormi[0]
+        aluminio = ("""
+        1 artículo personal (bolso) (Debe caber debajo del asiento)
+        1 equipaje de mano (10 kg)
+        Equipaje de bodega (23 kg)
+        Asiento Economy (Aleatoria-clasificado Aluminio)
+        Cambios de vuelo (No es permitido)
+        Reembolso (No es permitido)""")
+        return valor_paquete, aluminio
+    elif clase == "Diamante":
+        valor_paquete = valorme[0]
+        diamante = ("""
+        1 artículo personal (bolso) (Debe caber debajo del asiento)
+        1 equipaje de bodega (23 kg) (Debe caber en el compartimiento superior)
+        1 equipaje de mano (10 kg) (Entrega el equipaje en el counter)
+        Asiento Economy (Filas específicas disponibles de manera aleatoria)
+        Cambios de vuelo (No es permitido)
+        Reembolso (No es permitido)""")
+        return valor_paquete, diamante
+    else:
+        valor_paquete = valorma[0]
+        premium = ("""
+        1 artículo personal (bolso) (Debe caber debajo del asiento)
+        1 equipaje de mano (10 kg) (Debe caber en el compartimiento superior)
+        1 equipaje de bodega (23 kg) (Entrega el equipaje en el counter)
+        Asiento Plus (Sujeto a disponibilidad-clasificado Premium)
+        Cambios de vuelo (Sin cargo por cambio, antes del vuelo)
+        Reembolso (No es permitido)""")
+        return valor_paquete, premium
+    
+def calcular_total_pagar():
+    total_pagar = valor_paquete * int(cant)
+    return total_pagar
 
 def volver_5():
     ventana_tarjeta.destroy()
@@ -747,32 +789,181 @@ def volver_5():
 
 def nueva_ventana_tarjeta():
     global ventana_tarjeta
-    ventana_reserva.withdraw()
+    ventana_reserva.withdraw() 
 
-    ventana_tarjeta = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
+    ventana_tarjeta = tk.Toplevel(window)
     ventana_tarjeta.title("Sky-Voyage")
     ventana_tarjeta.geometry("800x400")
-    ventana_tarjeta.config(bg = "white")
     ventana_tarjeta.iconbitmap("avion.ico")
     ventana_tarjeta.resizable(0, 0)
 
-    lienzo_6 = tk.Frame(ventana_tarjeta, bg="white")
-    lienzo_6.pack(pady=40, fill="x")
+    #----Crear el cuadro para los datos de la tarjeta----
+    tarjeta = tk.Frame(ventana_tarjeta, bg='white', relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
+    tarjeta.pack(pady=20, padx=10, side="left")
+    
+    datos = tk.Label(tarjeta, text="Datos de la tarjeta" ,bg='white', relief=tk.FLAT)
+    datos.pack(pady=5, padx=20, side="top")
 
-    contenedor_1 = tk.Frame(lienzo_6, bg="white", highlightbackground="red", highlightthickness=1)
-    contenedor_1.pack(side="left", pady=5, padx=1)
-    contenedor_2 = tk.Frame(lienzo_6, bg="white", highlightbackground="red", highlightthickness=1)
-    contenedor_2.pack(side="right", pady=5, padx=1)
+    # Nombre del titular
+    nombre_titular = tk.Label(tarjeta, text="Nombre del Titular:", bg="white")
+    nombre_titular.pack(pady=5, padx=20, side="top")
+    entrada_nombre = tk.Entry(tarjeta)
+    entrada_nombre.pack(pady=5, padx=20, side="top")
 
-    datos = tk.Label(contenedor_1, text="Datos de la tarjeta", bg="white")
-    datos.pack(side="top", pady=5, padx=1)
+    # Número de tarjeta
+    lbl_numero_tarjeta = tk.Label(tarjeta, text="Número de Tarjeta:", bg="white")
+    lbl_numero_tarjeta.pack(pady=5, padx=20, side="top")
+    entrada_numero_tarjeta = tk.Entry(tarjeta)
+    entrada_numero_tarjeta.pack(pady=5, padx=20, side="top")
 
-    resumen = tk.Label(contenedor_2, text="Resumen de compra", bg="white")
-    resumen.pack(side="top", pady=5, padx=1)
+    # Fecha de expiración
+    lbl_fecha_expiracion = tk.Label(tarjeta, text="Fecha de Expiración:", bg="white")
+    lbl_fecha_expiracion.pack(pady=5, padx=20, side="top")
 
-def nombre_completo():
-    nombre = nombre_registro()
-    apellido = apellido_registro()
-    return f"{nombre} {apellido}"
+    opciones_mes = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+    entrada_mes = ttk.Combobox(tarjeta, values=opciones_mes)
+    entrada_mes.current("Mes")
+    entrada_mes.pack(pady=5, padx=5, side="left")
+
+    opciones_anio = ["2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032"]
+    entrada_anio = ttk.Combobox(tarjeta, values=opciones_anio)
+    entrada_mes.current("Año")
+    entrada_anio.pack(pady=5, padx=5, side="left")
+
+    # CVV
+    entrada_cvv = tk.Entry(tarjeta)
+    entrada_cvv.grab_current("CVV")
+    entrada_cvv.pack(pady=5, padx=5, side="right")
+
+
+   
+    def validar_numero_tarjeta():
+        numero_tarjeta = entrada_numero_tarjeta.get()
+        if len(numero_tarjeta) != 16:
+            messagebox.showwarning(title="Error", message="El número de tarjeta debe tener 16 dígitos")
+            return False
+        return True
+
+    def validar_cvv():
+        cvv = entrada_cvv.get()
+        if len(cvv) != 3:
+            messagebox.showwarning(title="Error", message="El CVV debe tener 3 dígitos")
+            return False
+        return True
+    
+    def calcular_total_pagar(valor_paquete):
+        total_pagar = valor_paquete * int(cant)
+        return total_pagar
+
+    #----Crear el cuadro para los datos de la tarjeta----
+    cuenta = tk.Frame(ventana_tarjeta, bg='white', relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
+    cuenta.pack(pady=20, padx=10, side="right")
+
+    # Mostrar el vuelo seleccionado
+    vuelo_label = tk.Label(cuenta, text="Vuelo seleccionado:", bg="white")
+    vuelo_label.pack(pady=5, padx=20, side="top")
+
+    text = (f"{ori} a {des}")
+    viaje = tk.Label(cuenta, text=text , relief="flat", bg="white", fg="black")
+    viaje.pack(pady=5, padx=20, side="top")
+
+    # Mostrar el número de personas
+    personas_label = tk.Label(cuenta, text="Número de personas:", bg='white')
+    personas_label.pack(pady=5, padx=20, side="top")
+
+    textt = cant
+    viaje = tk.Label(cuenta, text=textt , relief="flat", bg="white", fg="black")
+    viaje.pack(pady=5, padx=20, side="top")
+
+    # Mostrar el total a pagar
+    total_label = tk.Label(cuenta, text="Valor unitario:", bg='white')
+    total_label.pack(pady=5, padx=20, side="top")
+
+    textto = valor_paquete
+    viaje = tk.Label(cuenta, text=textto , relief="flat", bg="white", fg="black")
+    viaje.pack(pady=5, padx=20, side="top")
+
+    # Mostrar el total a pagar
+    total_label = tk.Label(cuenta, text="Total a pagar:", bg='white')
+    total_label.pack(pady=5, padx=20, side="top")
+
+    texto = calcular_total_pagar(valor_paquete)
+    viaje = tk.Label(cuenta, text=texto , relief="flat", bg="white", fg="black")
+    viaje.pack(pady=5, padx=20, side="top")
+    
+    # Botón de pagar
+    pagar_button = tk.Button(ventana_tarjeta, text="Pagar", bg='red3', fg='black', command=nueva_ventana_ticket)
+    pagar_button.bind("<Button-1>", lambda event: validar_numero_tarjeta(), validar_cvv())
+    pagar_button.pack(pady=5, padx=10, side="bottom")
+    
+    btn_vol = tk.Button(ventana_vuelos, text="Atrás", bg="red", fg="white", command=volver_5)
+    btn_vol.pack(pady=5, padx=10, side="bottom")
+
+def crear_texto_rotado(canvas, texto, x, y, angulo, font=("Helvetica", 12, "bold"), fill="white"):
+    # -------- Crear texto rotado ---------
+    canvas.create_text(x, y, text=texto, angle=angulo, fill=fill, font=font,ANCHOR="w")
+
+def nueva_ventana_ticket():
+    ventana_tarjeta.withdraw() 
+
+    ventana_ticket = tk.Toplevel(window)  
+    ventana_ticket.title("Sky-Voyage")
+    ventana_ticket.geometry("700x280")
+    ventana_ticket.config(bg="white")
+    ventana_ticket.resizable(0, 0)
+
+    # -------- lienzo --------------
+    lienzo9 = tk.Frame(ventana_ticket, bg="white")
+    lienzo9.pack(pady=10, padx=10)
+
+    # -------- barra lateral --------------
+    barra_lateral = tk.Frame(lienzo9, bg="red", width=80)
+    barra_lateral.pack(side = "left", fill="y")
+    
+    # ---------- canvas en el lateral ----------
+    canvas_lateral = tk.Canvas(barra_lateral, bg="red", width=80, height=280)
+    canvas_lateral.pack()
+    
+    # ----------------- posicion del texto lateral ---------------------
+    crear_texto_rotado(canvas_lateral, "Sky-Voyage", 40, 175, 90, font=("Helvetica", 12, "bold"), fill="white")
+
+    # -------- barra superiro ------------
+    encabezado = tk.Frame(lienzo9, bg="black", height=40)
+    encabezado.pack(fill="x")
+    tk.Label(encabezado, text="Pase de abordaje", bg="black", fg="white", font=("Helvetica", 12)).pack(pady=5)
+
+    # ------------ Contenido principal ------------------
+    contenido = tk.Frame(lienzo9, bg="white")
+    contenido.pack(pady=10, padx=10, fill="both", expand=True)
+
+    def nombre_registro():
+        datos_registro = abrir_datos_registro()
+        return datos_registro[-1][0]
+
+    def nombre_completo():
+        nombre = nombre_registro()
+        apellido = apellido
+        return f"{nombre} {apellido}"
+
+    # Mostrar los valores de los campos de texto
+    nombre_t = nombre_completo()
+    tk.Label(contenido, text="Nombre pasajero:", bg="white", font=("Helvetica", 12)).grid(row=0, column=0, sticky="w", pady=5)
+    tk.Label(contenido, text=nombre_t, bg="white", font=("Helvetica", 12)).grid(row=0, column=1, sticky="w", pady=5)
+
+    tk.Label(contenido, text="Origen:", bg="white", font=("Helvetica", 12)).grid(row=1, column=0, sticky="w", pady=5)
+    tk.Label(contenido, text=ori, bg="white", font=("Helvetica", 12)).grid(row=1, column=1, sticky="w", pady=5)
+
+    tk.Label(contenido, text="Destino:", bg="white", font=("Helvetica", 12)).grid(row=2, column=0, sticky="w", pady=5)
+    tk.Label(contenido, text=des, bg="white", font=("Helvetica", 12)).grid(row=2, column=1, sticky="w", pady=5)
+
+    tk.Label(contenido, text="Vuelo:", bg="white", font=("Helvetica", 12)).grid(row=3, column=0, sticky="w", pady=5)
+    tk.Label(contenido, text=vuelo2, bg="white", font=("Helvetica", 12)).grid(row=3, column=1, sticky="w", pady=5)
+
+    tk.Label(contenido, text="Fecha:", bg="white", font=("Helvetica", 12)).grid(row=1, column=2, sticky="w", padx=20)
+    tk.Label(contenido, text=fech, bg="white", font=("Helvetica", 12)).grid(row=1, column=3, sticky="w", pady=5)
+
+    tk.Label(contenido, text="Hora:", bg="white", font=("Helvetica", 12)).grid(row=2, column=2, sticky="w", padx=20)
+    tk.Label(contenido, text=hora_s, bg="white", font=("Helvetica", 12)).grid(row=2, column=3, sticky="w", pady=5)
+
 
 window.mainloop()
