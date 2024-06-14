@@ -6,6 +6,7 @@ from PIL import Image, ImageTk as itk #librería de imagenes
 from tkinter import ttk # LLibrería para los combobox y mas comandos
 from tkinter import messagebox # Ventana emergente
 from datetime import datetime # Para el tiempo
+import random, string, re
 
 # ---------Ventana principal------------
 window = Tk()
@@ -39,20 +40,166 @@ apellido_tex.grid(row=1, column=1, padx=0, pady= 10)
 apellido_entry = tk.Entry(lienzo)
 apellido_entry.grid(row=2, column=1, padx=0, pady=5)
 
+def guardar_datos():
+    global codigo, apellido
+    codigo = codigo_entry.get()
+    apellido = apellido_entry.get()
+    datos_ingresados()
+
 #------función de datos ingresados por el usuario--------
 def datos_ingresados():
+    usuario_registrado =[]
     codigo = codigo_entry.get() #Para guardar los datos de código
     apellido = apellido_entry.get() #Para guardar los datos de apellido
-    #---Guardar los datos en un archivo de texto---
-    with open("datos_usuario.txt", "a") as file:
-        file.write(f"Código: {codigo} - Apellido: {apellido}\n") #Cómo se guardan los datos en el txt
+    with open("datos_usuario.txt", "r") as file:
+        for line in file:
+            usuario_registrado.append(line.strip().split(','),) #Cómo se guardan los datos en el txt
+    if [codigo, apellido] in usuario_registrado:
+        messagebox.showinfo(title="Bienvenido Usuario", message="Bienvenido de nuevo")
+        nueva_ventana_vuelos()
+    else:
+        messagebox.showinfo(title="Usuario no encontrado", message="No se encuentra en la base de datos, por favor regístrese")
+        nueva_ventana_registro()
 
-    #---Función nueva ventana---
-    nueva_ventana_vuelos()
+def abrir_datos_registro():
+    with open("registro.txt", "r") as file:
+        datos_registro = [line.strip().split(",") for line in file]
+    return datos_registro
 
 #-------------Botón check-in-------------
 checkin_b = tk.Button(lienzo, text="Realizar Check-in", bg="red", fg="white", command=datos_ingresados)
 checkin_b.grid(row=3, columnspan=3, pady=10)
+
+def guardar_datos_registro():
+    global ape
+    nom = nombre.get()
+    ape = apellido.get()
+    gen = genero.get()
+    nac = nacionalidad.get()
+    ide = identi.get()
+    fec = fecha.get()
+    asi = asis_t.get()
+    cor = correo.get()
+    tel = telefono.get()
+    generar_codigo_checkin()
+
+    if len(nom and ape and gen and nac and ide and fec and asi and cor and tel) != 0:
+        with open("registro.txt", "a") as file:
+            file.write(f"{nom},{ape},{gen},{nac},{ide},{fec},{asi},{cor},{tel}\n")
+        nueva_ventana_vuelos()    
+    else:
+        messagebox.showwarning(title="Error", message="Llene todos los campos")
+
+def generar_codigo_checkin():
+    apellido = ape
+    codigo = apellido[0] + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+    with open("datos_checkin.txt", "a") as file:
+        file.write(f"{apellido},{codigo}\n")
+    messagebox.showinfo(title="Código", message=f"Tu código es {codigo}")
+    return codigo
+
+def validar():
+    tele = telefono.get()
+    corre = correo.get()
+    contador = 0
+    if tele.isdigit() and len(tele) == 10:
+        guardar_datos_registro()
+        for i in corre:
+            if i == "@":
+                contador += 1
+                if contador == 1 and (i == "."):
+                    contador += 1
+        if contador == 2:
+            guardar_datos_registro()
+        else:     
+                messagebox.showwarning(title="Correo", message="Correo no válido")
+    else:
+        messagebox.showwarning(title="Número", message="Número no válido")
+    corre = correo.get()
+
+def nueva_ventana_registro():
+    global telefono, correo, nombre, apellido, identi, nacionalidad, fecha, asis_t, genero
+    ventana_registro = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
+    ventana_registro.title("Sky-Voyage")
+    ventana_registro.geometry("800x400")
+    ventana_registro.config(bg = "white")
+    ventana_registro.iconbitmap("avion.ico")
+    ventana_registro.resizable(0, 0)
+
+    lienzo_5 = tk.Frame(ventana_registro, bg="white")
+    lienzo_5.pack(pady=40, fill="x")
+
+    cua_regist = tk.Frame(lienzo_5, bg="white")
+    cua_regist.pack(fill="x", padx=40, pady=0)
+    registro_t = tk.Label(cua_regist, text="Realizar un vuelo", bg="white", relief="flat")
+    registro_t.pack(side="left", padx=40, pady=0)
+
+    recuadro = tk.Frame(lienzo_5, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    recuadro.pack(fill="x", pady=10, padx=10)
+
+    genero_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    genero_c.grid(row=0, column=0, padx=1, pady=5)
+    genero_t = tk.Label(genero_c, text="Género", bg="white")
+    genero_t.grid(row=0, column=0, padx=1, pady=5)
+    genero = ttk.Combobox(genero_c, values=["Masculino", "Femenino","Otro"])
+    genero.grid(row=0, column=1, padx=1, pady=5)
+
+    primer_n= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    primer_n.grid(row=0, column=1, padx=1, pady=5)
+    nombre_t = tk.Label(primer_n, text="Primer Nombre", bg="white")
+    nombre_t.grid(row=0, column=0, padx=1, pady=5)
+    nombre = tk.Entry(primer_n)
+    nombre.grid(row=0, column=1, padx=1, pady=5)
+
+    primer_a = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    primer_a.grid(row=0, column=2, padx=1, pady=5)
+    apellido_t = tk.Label(primer_a, text="Primer Apellido", bg="white")
+    apellido_t.grid(row=0, column=0, padx=1, pady=5)
+    apellido = tk.Entry(primer_a)
+    apellido.grid(row=0, column=1, padx=1, pady=5)
+
+    iden_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    iden_c.grid(row=1, column=0, padx=5, pady=5)
+    identi_t = tk.Label(iden_c, text="Identificación", bg="white")
+    identi_t.grid(row=0, column=0, padx=1, pady=5)
+    identi = tk.Entry(iden_c)
+    identi.grid(row=0, column=1, padx=1, pady=5)
+
+    naci_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    naci_c.grid(row=1, column=1, padx=1, pady=5)
+    naci_t = tk.Label(naci_c, text="Nacionalidad", bg="white")
+    naci_t.grid(row=0, column=0,columnspan=1, padx=5, pady=5)
+    nacionalidad = tk.Entry(naci_c)
+    nacionalidad.grid(row=0, column=1, padx=1, pady=5)
+    
+    fecha_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    fecha_c.grid(row=1, column=2, padx=1, pady=5)
+    fecha_t = tk.Label(fecha_c, text="Fecha Nacimiento", bg="white", width=20)
+    fecha_t.grid(row=0, column=0, padx=1, pady=5)
+    fecha = tk.Entry(fecha_c)
+    fecha.grid(row=0, column=1, padx=1, pady=5)
+
+    tele_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    tele_c.grid(row=2, column=0, padx=1, pady=5)
+    tele_t = tk.Label(tele_c, text="Teléfono", bg="white")
+    tele_t.grid(row=0, column=0, padx=1, pady=5)
+    telefono = tk.Entry(tele_c)
+    telefono.grid(row=0, column=1, padx=1, pady=5)
+
+    correo_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
+    correo_c.grid(row=2, column=1, padx=1, pady=5)
+    correo_t = tk.Label(correo_c, text="Correo electrónico", bg="white", width=20)
+    correo_t.grid(row=0, column=0, padx=1, pady=5)
+    correo = tk.Entry(correo_c)
+    correo.grid(row=0, column=1, padx=1, pady=5)
+
+    asis_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
+    asis_c.grid(row=2, column=2, padx=1, pady=5)
+    asis_t = ttk.Combobox(asis_c, values=["Si", "No"])
+    asis_t.grid(row=0, column=0, padx=1, pady=5)
+
+    continuar = tk.Button(recuadro, text="Continuar", bg="red", fg="white", command=validar)
+    continuar.grid(row=3, column=1, padx=5, pady=5)
 
 matriz = [
 ['Z328', '2024-06-5', '08:13:00', '10:35:00', 244463, 538669, 1666594, 'Santa Marta', 'Bogota'],
@@ -157,7 +304,7 @@ matriz = [
 ['V560', '2024-06-26', '08:41:00', '11:20:00', 118816, 675485, 2104917, 'Santa Marta', 'Cali'],
 ]
 
-def volver():
+def volver_1():
     ventana_vuelos.destroy()
     window.deiconify()
 
@@ -282,7 +429,7 @@ def nueva_ventana_vuelos():
     btn_buscar.grid(row=1, column=5, padx=5, pady=2)
 
         #---------Botón Volver-----------
-    btn_volver = tk.Button(busqueda, text="Atrás", bg="red", fg="white", command=volver)
+    btn_volver = tk.Button(busqueda, text="Atrás", bg="red", fg="white", command=volver_1)
     btn_volver.grid(row=1, column=4, padx=5, pady=2)
 
 def actualizar_fechas_disponibles():
@@ -320,7 +467,7 @@ def cambiar_estado(boton):
         else:
             tk.messagebox.showinfo("Error", f"Solo se pueden seleccionar {cant} asientos.")
 
-def volver_1():
+def volver_2():
     ventana_asientos.destroy()
     ventana_vuelos.deiconify()
 
@@ -457,7 +604,7 @@ def calcular_tiempo_transcurrido(hora_inicio, hora_fin):
     
     return horas, minutos
 
-def volver_2():
+def volver_3():
     ventana_ofertas.destroy()
     ventana_asientos.deiconify()
 
@@ -554,10 +701,10 @@ def nueva_ventana_ofertas():
     btn_pasar.pack(pady=10, padx=10, side="right")
 
     #-------Botón de volver-------
-    btn_volver = tk.Button(ventana_ofertas, text="Atrás", bg="red", fg="white", command=volver_2)
+    btn_volver = tk.Button(ventana_ofertas, text="Atrás", bg="red", fg="white", command=volver_3)
     btn_volver.pack(pady=10, padx=0, side="right")
 
-def volver_3():
+def volver_4():
     ventana_reserva.destroy()
     ventana_ofertas.deiconify()
 
@@ -591,110 +738,16 @@ def nueva_ventana_reserva():
     btn_pas = tk.Button(ventana_reserva, text="Seleccionar", bg="red", fg="white", command=nueva_ventana_registro)
     btn_pas.pack(pady=10, padx=30, side="right")
 
-    btn_vol = tk.Button(ventana_reserva, text="Atrás", bg="red", fg="white", command=volver_3)
+    btn_vol = tk.Button(ventana_reserva, text="Atrás", bg="red", fg="white", command=volver_4)
     btn_vol.pack(pady=10, padx=30, side="right")
-
-def volver_4():
-    ventana_registro.destroy()
-    ventana_reserva.deiconify()
-
-def nueva_ventana_registro():
-    global ventana_registro
-    ventana_reserva.withdraw()
-
-    ventana_registro = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
-    ventana_registro.title("Sky-Voyage")
-    ventana_registro.geometry("800x400")
-    ventana_registro.config(bg = "white")
-    ventana_registro.iconbitmap("avion.ico")
-    ventana_registro.resizable(0, 0)
-
-    lienzo_5 = tk.Frame(ventana_registro, bg="white")
-    lienzo_5.pack(pady=40, fill="x")
-
-    cua_regist = tk.Frame(lienzo_5, bg="white")
-    cua_regist.pack(fill="x", padx=40, pady=0)
-    registro_t = tk.Label(cua_regist, text="Realizar un vuelo", bg="white", relief="flat")
-    registro_t.pack(side="left", padx=40, pady=0)
-
-    recuadro = tk.Frame(lienzo_5, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    recuadro.pack(fill="x", pady=10, padx=10)
-
-    genero_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    genero_c.grid(row=0, column=0, padx=1, pady=5)
-    genero_t = tk.Label(genero_c, text="Género", bg="white")
-    genero_t.grid(row=0, column=0, padx=1, pady=5)
-    genero = ttk.Combobox(genero_c, values=["Masculino", "Femenino","Otro"])
-    genero.current(0)
-    genero.grid(row=0, column=1, padx=1, pady=5)
-
-    primer_n= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    primer_n.grid(row=0, column=1, padx=1, pady=5)
-    nombre_t = tk.Label(primer_n, text="Primer Nombre", bg="white")
-    nombre_t.grid(row=0, column=0, padx=1, pady=5)
-    nombre = tk.Entry(primer_n)
-    nombre.grid(row=0, column=1, padx=1, pady=5)
-
-    primer_a = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    primer_a.grid(row=0, column=2, padx=1, pady=5)
-    apellido_t = tk.Label(primer_a, text="Primer Apellido", bg="white")
-    apellido_t.grid(row=0, column=0, padx=1, pady=5)
-    apellido = tk.Entry(primer_a)
-    apellido.grid(row=0, column=1, padx=1, pady=5)
-
-    iden_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    iden_c.grid(row=1, column=0, padx=5, pady=5)
-    identi_t = tk.Label(iden_c, text="Identificación", bg="white")
-    identi_t.grid(row=0, column=0, padx=1, pady=5)
-    identi = tk.Entry(iden_c)
-    identi.grid(row=0, column=1, padx=1, pady=5)
-
-    naci_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    naci_c.grid(row=1, column=1, padx=1, pady=5)
-    naci_t = tk.Label(naci_c, text="Nacionalidad", bg="white")
-    naci_t.grid(row=0, column=0,columnspan=1, padx=5, pady=5)
-    nacionalidad = tk.Entry(naci_c)
-    nacionalidad.grid(row=0, column=1, padx=1, pady=5)
-    
-    fecha_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    fecha_c.grid(row=1, column=2, padx=1, pady=5)
-    fecha_t = tk.Label(fecha_c, text="Fecha Nacimiento", bg="white", width=20)
-    fecha_t.grid(row=0, column=0, padx=1, pady=5)
-    fecha = tk.Entry(fecha_c)
-    fecha.grid(row=0, column=1, padx=1, pady=5)
-
-    tele_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    tele_c.grid(row=2, column=0, padx=1, pady=5)
-    tele_t = tk.Label(tele_c, text="Teléfono", bg="white")
-    tele_t.grid(row=0, column=0, padx=1, pady=5)
-    telefono = tk.Entry(tele_c)
-    telefono.grid(row=0, column=1, padx=1, pady=5)
-
-    correo_c= tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground='red', highlightthicknes=1)
-    correo_c.grid(row=2, column=1, padx=1, pady=5)
-    correo_t = tk.Label(correo_c, text="Correo electrónico", bg="white", width=20)
-    correo_t.grid(row=0, column=0, padx=1, pady=5)
-    correo = tk.Entry(correo_c)
-    correo.grid(row=0, column=1, padx=1, pady=5)
-
-    asis_c = tk.Frame(recuadro, bg="white", relief=tk.FLAT, highlightbackground="red", highlightthicknes=1)
-    asis_c.grid(row=2, column=2, padx=1, pady=5)
-    asis_t = tk.Checkbutton(asis_c, text="Asistencia en el vuelo", bg="white")
-    asis_t.grid(row=0, column=0, padx=1, pady=5)
-
-    continuar = tk.Button(recuadro, text="Continuar", bg="red", fg="white", command=nueva_ventana_tarjeta)
-    continuar.grid(row=3, column=1, padx=5, pady=5)
-
-    volver = tk.Button(recuadro, text="Atrás", bg="red", fg="white", command=volver_4)
-    volver.grid(row=3, column=0, padx=5, pady=5)
 
 def volver_5():
     ventana_tarjeta.destroy()
-    ventana_registro.deiconify()
+    ventana_reserva.deiconify()
 
 def nueva_ventana_tarjeta():
     global ventana_tarjeta
-    ventana_registro.withdraw()
+    ventana_reserva.withdraw()
 
     ventana_tarjeta = tk.Toplevel(window) #Abrir la ventana nueva encima de la ventana principal
     ventana_tarjeta.title("Sky-Voyage")
@@ -717,6 +770,9 @@ def nueva_ventana_tarjeta():
     resumen = tk.Label(contenedor_2, text="Resumen de compra", bg="white")
     resumen.pack(side="top", pady=5, padx=1)
 
-
+def nombre_completo():
+    nombre = nombre_registro()
+    apellido = apellido_registro()
+    return f"{nombre} {apellido}"
 
 window.mainloop()
